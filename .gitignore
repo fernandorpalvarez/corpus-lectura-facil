@@ -1,5 +1,8 @@
-./cedid/pdfs/
+/cedid/pdfs/*
+/plenainclusion/pdfs/*
+/transparenciaaragon/pdfs/*
 
-./plenainclusion/pdfs/
-
-./transparenciaaragon/pdfs/
+/cedid/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/asociacion_lectura_facil/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/liber/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
