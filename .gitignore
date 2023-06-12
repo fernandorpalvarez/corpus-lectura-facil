@@ -13,5 +13,4 @@
 
 *.pdf
 *checkpoint.ipynb
-
-/planeta_facil/anime.txt
+*.txt
