@@ -10,3 +10,8 @@
 /asociacion_lectura_facil/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
 /liber/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
 /transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+
+*.pdf
+*checkpoint.ipynb
+
+/planeta_facil/anime.txt
