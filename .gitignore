@@ -1,16 +1,17 @@
-/cedid/pdfs/*
+/text_extraction/cedid/pdfs/*
 /plenainclusion/pdfs/*
 /transparenciaaragon/pdfs/*
-/asociacion_lectura_facil/pdfs/*
-/liber/pdfs/*
-/plena_inclusion_la_rioja/pdfs/*
-/discapnet/pdfs/*
+/text_extraction/asociacion_lectura_facil/pdfs/*
+/text_extraction/liber/pdfs/*
+/text_extraction/plena_inclusion_la_rioja/pdfs/*
+/text_extraction/discapnet/pdfs/*
 
-/cedid/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/asociacion_lectura_facil/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/liber/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/text_extraction/cedid/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/text_extraction/asociacion_lectura_facil/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/text_extraction/liber/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
+/text_extraction/transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
 
 *.pdf
 *checkpoint.ipynb
 *.txt
+/text_extraction/planeta_facil/texts/
