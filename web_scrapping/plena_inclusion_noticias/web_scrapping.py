@@ -70,5 +70,5 @@ def execute_scrapping(base_url, path_to_new):
 
 if __name__ == '__main__':
     url = "https://www.plenainclusion.org/noticias/?sf_paged="
-    path = '/corpus-lectura-facil/text_extraction/plena_inclusion_noticias/texts/'
+    path = '/corpus-lectura-facil/web_scrapping/plena_inclusion_noticias/texts/'
     raw_text_in_pages = execute_scrapping(url, path)
