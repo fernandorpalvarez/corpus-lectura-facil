@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
+import os
 
 
 def get_soup(url):
@@ -35,10 +36,11 @@ def save_new(text, name):
     text_file.close()
 
 
-def execute_scrapping(base_url):
+def execute_scrapping(base_url, path_to_new):
     soup = get_soup(base_url)
 
     i = 1
+    j = 1
     raw_text_in_pages = []
 
     elements = soup.find_all('a', class_="eael-post-elements-readmore-btn")
@@ -52,10 +54,13 @@ def execute_scrapping(base_url):
 
         content_soup = get_soup(content_url)
         try:
-            file_name = content_url.split("/")[-2]
+            file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
+            while os.path.isfile(file_name):
+                j += 1
+                file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
+            # file_name = content_url.split("/")[-2]
             text = clean_content(content_soup)
-            path_to_new = 'C:/Users/fernando.rubio.perez/Jupyter projects/TFM/corpus-lectura-facil/planeta_facil/texts/' + file_name + '.txt'
-            save_new(text, path_to_new)
+            save_new(text, file_name)
 
         except Exception as e:
             print("Could not retreive pdf from: ", content_url, ", due to: ", e)
@@ -65,4 +70,5 @@ def execute_scrapping(base_url):
 
 if __name__ == '__main__':
     url = "https://planetafacil.plenainclusion.org/noticias/"
-    raw_text_in_pages = execute_scrapping(url)
+    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/planeta_facil/'
+    raw_text_in_pages = execute_scrapping(url, path)

@@ -70,5 +70,5 @@ def execute_scrapping(base_url, path_to_new):
 
 if __name__ == '__main__':
     url = "https://plenainclusionextremadura.org/plenainclusion/actualidad/noticias?page="
-    path = './pdfs/'
+    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/plena_inclusion_extremadura/'
     raw_text_in_pages = execute_scrapping(url, path)

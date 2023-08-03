@@ -1,3 +1,5 @@
+import os.path
+
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
@@ -37,6 +39,7 @@ def save_new(text, name):
 
 def execute_scrapping(base_url, path_to_new):
     i = 1
+    j = 1
     base_url_paged = base_url + str(i)
     soup = get_soup(base_url_paged)
     raw_text_in_pages = []
@@ -55,10 +58,13 @@ def execute_scrapping(base_url, path_to_new):
 
             content_soup = get_soup(content_url)
             try:
-                file_name = content_url.split("/")[-2]
+                file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
+                while os.path.isfile(file_name):
+                    j += 1
+                    file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
+                # file_name = content_url.split("/")[-2]
                 text = clean_content(content_soup)
-                new_path_to_new = path_to_new + file_name + '.txt'
-                save_new(text, new_path_to_new)
+                save_new(text, file_name)
 
             except Exception as e:
                 print("Could not retreive pdf from: ", content_url, ", due to: ", e)
@@ -70,5 +76,5 @@ def execute_scrapping(base_url, path_to_new):
 
 if __name__ == '__main__':
     url = "https://www.plenainclusion.org/noticias/?sf_paged="
-    path = '/corpus-lectura-facil/web_scrapping/plena_inclusion_noticias/texts/'
+    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/plena_inclusion_noticias/'
     raw_text_in_pages = execute_scrapping(url, path)
