@@ -8,8 +8,10 @@ if __name__ == '__main__':
     pdfs_path = config["pdfs_path"]
     output_path_for_extracted_text = config["output_path_for_extracted_text"]
     rename_files_flag = config["rename_files_flag"]
+    extract_text_flag = config["extract_text_flag"]
 
     if rename_files_flag:
         pdf_tool_manager.rename_files_in_path(pdfs_path)
 
-    pdf_te.extract_text_from_pdfs_in_subdirs_path(pdfs_path, output_path_for_extracted_text)
+    if extract_text_flag:
+        pdf_te.extract_text_from_pdfs_in_subdirs_path(pdfs_path, output_path_for_extracted_text)

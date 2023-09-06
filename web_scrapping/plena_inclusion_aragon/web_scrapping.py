@@ -70,5 +70,5 @@ def execute_scrapping(base_url, sub_url_news, path_to_new):
 if __name__ == '__main__':
     url = "https://www.plenainclusionaragon.org/cea/lf/es/"
     sub_url_news = "index.php?id=1&seccion=noticias&tipo=periodico_aragon"
-    path = './pdfs/'
+    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/plena_inclusion_aragon'
     raw_text_in_pages = execute_scrapping(url, sub_url_news, path)
