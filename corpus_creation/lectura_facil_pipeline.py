@@ -3,7 +3,7 @@ import re
 import pandas as pd
 
 
-# 1. Data gathering
+# 1. Data gathering (tokenization)
 def load_text_in_lectura_facil_from_path(path):
     combined_df = pd.DataFrame()
     # Iterate over the path
@@ -15,16 +15,16 @@ def load_text_in_lectura_facil_from_path(path):
                     data = f.read()
 
                 # Define the regular expression pattern for the separator
-                separator_pattern = r'\.\n+'
+                separator_pattern = r'\.\n+|\?|\!\. +'
 
                 # Split the string into records using the separator pattern
-                records = re.split(separator_pattern, data)
+                tokens = re.compile(separator_pattern).split(data)
 
                 # Cleanup jump line characters
-                records = [r.replace("\n", " ") for r in records]
+                tokens = [r.replace("\n", " ") for r in tokens]
 
                 # Create a DataFrame from the records
-                df = pd.DataFrame({'text': records})
+                df = pd.DataFrame({'text': tokens})
 
                 # Combine the results
                 combined_df = pd.concat([combined_df, df])
@@ -33,29 +33,46 @@ def load_text_in_lectura_facil_from_path(path):
 
 
 def apply_pipeline(df):
+    df = apply_special_char_removal(df)
     df = apply_minor_casing(df)
+    df = apply_html_tag_removal(df)
     return df
 
 
 # 2. Special characters removal
+def apply_special_char_removal(df):
+    df['text'] = df['text'].apply(lambda x: re.sub(r"^\w+( \w+)*$", "", str(x), 0, re.IGNORECASE))
+    df['text'] = df['text'].apply(lambda x: " ".join(str(x).split()))
+    df = df[df['text'] != ""]
+    return df
 
-# 3. Tokenization
 
-# 4. Minor case conversion
+# 3. Minor case conversion
 def apply_minor_casing(df):
-    return df['text'].str.lower()
+    df['text'] = df['text'].str.lower()
+    return df
 
 
-# 5. Stopwords removal
+# 4. Stopwords removal
 
-# 6. Lemmatizing or stemming
+# 5. Lemmatizing or stemming
 
-# 7. Numeric characters removal
+# 6. Numeric characters removal
 
-# 8. HTML tags removal
+# 7. HTML tags removal
+def apply_html_tag_removal(df):
+    df['text'] = df['text'].str.replace('<.*?>', '')
+    # Use re.sub() to replace matched URLs with an empty string
+    patterns_to_apply = [r'\bhttp\.[^\s]+\b', r'\bwww\.[^\s]+\b', r'[^\s]+.http[^\s]+', r'[^\s]+.www[^\s]+',
+                         r'[^\s]+.org[^\s]+', r'[^\s]+.org', r'[^\s]+.es[^\s]+', r'[^\s]+.es', r'[^\s]+.com[^\s]+',
+                         r'[^\s]+.com', r'.com', r'www.']
+    for pattern in patterns_to_apply:
+        df['text'] = df['text'].apply(lambda x: re.sub(pattern, '', str(x)))
+    return df
 
-# 9. Empty or null values management
 
-# 10. Saving results
+# 8. Empty or null values management
+
+# 9. Saving results
 def save_dataframe_in_path(df, path):
     df.to_csv(os.path.join(path, "lectura_facil.csv"), sep="|", index=False, encoding="utf-8")
