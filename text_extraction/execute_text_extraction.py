@@ -5,10 +5,10 @@ import json
 
 if __name__ == '__main__':
     config = json.load(open("../config/pdf_to_text_extraction_config.json", "r", encoding="utf-8"))
-    pdfs_path = config["pdfs_path"]
-    output_path_for_extracted_text = config["output_path_for_extracted_text"]
-    rename_files_flag = config["rename_files_flag"]
-    extract_text_flag = config["extract_text_flag"]
+    pdfs_path = config["text_extraction"]["pdfs_path"]
+    output_path_for_extracted_text = config["text_extraction"]["output_path_for_extracted_text"]
+    rename_files_flag = config["text_extraction"]["rename_files_flag"]
+    extract_text_flag = config["text_extraction"]["extract_text_flag"]
 
     if rename_files_flag:
         pdf_tool_manager.rename_files_in_path(pdfs_path)
