@@ -12,7 +12,6 @@
 /web_scrapping/transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
 
 *.pdf
-*checkpoint.ipynb
+*.ipynb
 *.txt
-/web_scrapping/planeta_facil/texts/
-/config/pdf_to_text_extraction_config.json
+*.json
