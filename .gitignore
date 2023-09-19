@@ -6,11 +6,6 @@
 /web_scrapping/plena_inclusion_la_rioja/pdfs/*
 /web_scrapping/discapnet/pdfs/*
 
-/web_scrapping/cedid/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/web_scrapping/asociacion_lectura_facil/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/web_scrapping/liber/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-/web_scrapping/transparencia_aragon/.ipynb_checkpoints/web_scrapping-checkpoint.ipynb
-
 *.pdf
 *.ipynb
 *.txt
