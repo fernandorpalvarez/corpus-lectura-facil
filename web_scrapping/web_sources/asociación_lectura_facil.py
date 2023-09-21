@@ -38,7 +38,7 @@ print(len(content_file_urls), "pdfs doesn't have duplicates")
 # Saving files list in memory
 try:
     if content_file_urls:
-        with open(r'./content_list.txt', 'w') as fp:
+        with open(r'../asociacion_lectura_facil/content_list.txt', 'w') as fp:
             for item in tqdm(content_file_urls):
                 # write each item on a new line
                 fp.write("%s\n" % item)
@@ -48,7 +48,7 @@ except Exception as e:
 # Reading files list from memory
 try:
     with open(
-            './content_list.txt') as f:
+            '../asociacion_lectura_facil/content_list.txt') as f:
         content_file_urls = f.read().splitlines()
 except Exception as e:
     print(e)
