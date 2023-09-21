@@ -1,11 +1,3 @@
-/web_scrapping/cedid/pdfs/*
-/plenainclusion/pdfs/*
-/transparenciaaragon/pdfs/*
-/web_scrapping/asociacion_lectura_facil/pdfs/*
-/web_scrapping/liber/pdfs/*
-/web_scrapping/plena_inclusion_la_rioja/pdfs/*
-/web_scrapping/discapnet/pdfs/*
-
 *.pdf
 *.ipynb
 *.json
