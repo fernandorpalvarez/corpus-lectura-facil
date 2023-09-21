@@ -30,17 +30,19 @@ def execute_scrapping(base_url, saving_path):
                 e_html = e_html[0]
                 if e_html.a['href'] == '/es/taxonomy/term/32':
                     # Logic to download the pdf
-                    pdf_url = e_soup.find_all("a", class_="btn btn-download")[0]['href']
-                    if '.pdf' in pdf_url:
-                        try:
-                            response = requests.get(pdf_url)
-                            response_name = pdf_url.split('/')[-1]
-                            file_local_path = saving_path + "/" + response_name
-                            with open(file_local_path, 'wb') as f:
-                                f.write(response.content)
+                    btn_url = e_soup.find_all("a", class_="btn btn-download")
+                    if len(btn_url) > 0:
+                        pdf_url = btn_url[0]['href']
+                        if '.pdf' in pdf_url.lower():
+                            try:
+                                response = requests.get(pdf_url)
+                                response_name = pdf_url.split('/')[-1]
+                                file_local_path = saving_path + "/" + response_name
+                                with open(file_local_path, 'wb') as f:
+                                    f.write(response.content)
 
-                        except Exception as e:
-                            print(e)
+                            except Exception as e:
+                                print(e)
 
         # Get the next page in the url
         i += 1
