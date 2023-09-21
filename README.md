@@ -3,4 +3,5 @@ This project intends to create a text corpus, from scratch and in spanish, to re
 
 ## What is "lectura facil"?
 According to the official deffinition: It is a method that includes a set of guidelines and recommendations related to the writing of texts, the design and layout of documents and the validation of their comprehensibility, aimed at making information accessible to people with reading comprehension difficulties.
+
 In this website you can find some useful information and resources about "lectura facil": https://www.plenainclusion.org/discapacidad-intelectual/recurso/lectura-facil/
