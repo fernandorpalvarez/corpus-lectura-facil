@@ -3,7 +3,6 @@ import os.path
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
-from web_scrapping import web_scrapping_tools
 
 
 def get_soup(url):
@@ -56,7 +55,7 @@ def execute_scrapping(base_url, path_to_new):
                     j += 1
                     file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
                 # file_name = content_url.split("/")[-2]
-                text = web_scrapping_tools.clean_content(content_soup)
+                text = clean_content(content_soup)
                 save_new(text, file_name)
 
             except Exception as e:
