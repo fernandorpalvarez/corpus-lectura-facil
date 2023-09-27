@@ -34,7 +34,6 @@ def execute_scrapping(base_url, path_to_new):
     j = 1
     base_url_paged = base_url + str(i)
     soup = get_soup(base_url_paged)
-    raw_text_in_pages = []
 
     while len(soup.find_all('a', class_="elementor-post__thumbnail__link")) > 0:
 
@@ -62,5 +61,3 @@ def execute_scrapping(base_url, path_to_new):
                 print("Could not retrieve pdf from: ", content_url, ", due to: ", e)
 
         i += 1
-
-    return raw_text_in_pages

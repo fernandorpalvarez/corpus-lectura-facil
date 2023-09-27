@@ -38,11 +38,7 @@ def save_new(text, name):
 
 def execute_scrapping(base_url, path_to_new):
     soup = get_soup(base_url)
-
-    i = 1
     j = 1
-    raw_text_in_pages = []
-
     elements = soup.find_all('a', class_="eael-post-elements-readmore-btn")
 
     # Parse the url with beautifulsoup
@@ -64,5 +60,3 @@ def execute_scrapping(base_url, path_to_new):
 
         except Exception as e:
             print("Could not retreive pdf from: ", content_url, ", due to: ", e)
-
-    return raw_text_in_pages

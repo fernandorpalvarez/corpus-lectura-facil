@@ -37,10 +37,9 @@ def save_new(text, name):
     text_file.close()
 
 
-def execute_scrapping(base_url, sub_url_news, path_to_new):
-    soup = get_soup(base_url + sub_url_news)
+def execute_scrapping(base_url, path_to_new):
+    soup = get_soup(base_url + "index.php?id=1&seccion=noticias&tipo=periodico_aragon")
     elements = soup.find_all('div', class_="tooltipderecha")
-    pdfs_with_errors = []
     i = 0
 
     # Parse the url with beautifulsoup
@@ -59,16 +58,12 @@ def execute_scrapping(base_url, sub_url_news, path_to_new):
                     file_local_path = os.path.join(path_to_new, pdf_url.split('/')[-1])
                     file_local_path = file_local_path.split(".pdf")[-2] + "_" + str(i) + ".pdf"
                     with open(file_local_path, 'wb') as f:
-                        print("Saving,", file_local_path)
                         f.write(response.content)
 
                 except Exception as e:
                     print(e)
-                    pdfs_with_errors.append(pdf_url)
 
 
 if __name__ == '__main__':
     url = "https://www.plenainclusionaragon.org/cea/lf/es/"
-    sub_url_news = "index.php?id=1&seccion=noticias&tipo=periodico_aragon"
     path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/plena_inclusion_aragon'
-    raw_text_in_pages = execute_scrapping(url, sub_url_news, path)

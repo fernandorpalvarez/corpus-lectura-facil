@@ -1,5 +1,4 @@
 import web_scrapping.web_sources.asociacion_lectura_facil
-import web_scrapping.web_sources.ayuntamiento_logroño
 import web_scrapping.web_sources.cedid
 import web_scrapping.web_sources.planeta_facil
 import web_scrapping.web_sources.plena_inclusion

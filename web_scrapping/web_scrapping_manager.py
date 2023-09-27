@@ -17,8 +17,6 @@ def extract_pdfs_from_webs():
 
             if source == "asociacion_lectura_facil":
                 asociacion_lectura_facil.execute_scrapping(url, saving_path)
-            elif source == "ayuntamiento_logroño":
-                ayuntamiento_logroño.execute_scrapping(url, saving_path)
             elif source == "cedid":
                 cedid.execute_scrapping(url, saving_path)
             elif source == "planeta_facil":
