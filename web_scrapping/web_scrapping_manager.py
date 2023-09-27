@@ -15,26 +15,21 @@ def extract_pdfs_from_webs():
             url = sources[source]["url"]
             saving_path = os.path.join(base_saving_path, source)
 
-            if source == "asociacion_lectura_facil_test":
+            if source == "asociacion_lectura_facil":
                 asociacion_lectura_facil.execute_scrapping(url, saving_path)
             elif source == "ayuntamiento_logroño":
-                ayuntamiento_logroño
+                ayuntamiento_logroño.execute_scrapping(url, saving_path)
             elif source == "cedid":
-                # cedid
-                pass
-            elif source == "liber":
-                # liber
-                pass
+                cedid.execute_scrapping(url, saving_path)
             elif source == "planeta_facil":
-                planeta_facil
+                planeta_facil.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion":
-                plena_inclusion
+                plena_inclusion.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion_aragon":
-                plena_inclusion_aragon
+                plena_inclusion_aragon.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion_extremadura":
-                plena_inclusion_extremadura
+                plena_inclusion_extremadura.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion_noticias":
-                plena_inclusion_noticias
+                plena_inclusion_noticias.execute_scrapping(url, saving_path)
             elif source == "transparencia_aragon":
-                # transparencia_aragon
-                pass
+                transparencia_aragon.execute_scrapping(url, saving_path)

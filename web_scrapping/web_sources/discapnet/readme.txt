@@ -1,1 +1,1 @@
-Due to the complex structure of the pages in the web site I decided to download the pdfs manually.
+Due to the complex structure of the pages in the website I decided to download the pdfs manually.

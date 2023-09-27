@@ -22,7 +22,7 @@ def clean_content(bs4_soup):
     extracted_text = bs4_soup.find_all('div', class_="entry-content texto-lector-general")
     text_no_html = ""
     for text in extracted_text:
-        text_no_html = text_no_html + " " + BeautifulSoup(str(text), "lxml").text
+        text_no_html = text_no_html + " " + BeautifulSoup(str(text).replace("<br/>", " "), "lxml").text
     return text_no_html
 
 
@@ -66,9 +66,3 @@ def execute_scrapping(base_url, path_to_new):
             print("Could not retreive pdf from: ", content_url, ", due to: ", e)
 
     return raw_text_in_pages
-
-
-if __name__ == '__main__':
-    url = "https://planetafacil.plenainclusion.org/noticias/"
-    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/planeta_facil/'
-    raw_text_in_pages = execute_scrapping(url, path)

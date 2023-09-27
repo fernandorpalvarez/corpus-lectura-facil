@@ -3,6 +3,7 @@ import os.path
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
+from web_scrapping import web_scrapping_tools
 
 
 def get_soup(url):
@@ -11,19 +12,11 @@ def get_soup(url):
     return BeautifulSoup(html, "html.parser")
 
 
-def get_text_from_new(url):
-    bs4_soup = get_soup(url)
-    clean_text = clean_content(bs4_soup)
-    name = url.split("/")[-1] + ".txt"
-    save_new(clean_text, name)
-    return clean_text
-
-
 def clean_content(bs4_soup):
     extracted_text = bs4_soup.find_all('section', class_="entry-content cf")
     text_no_html = ""
     for text in extracted_text:
-        text_no_html = text_no_html + " " + BeautifulSoup(str(text), "lxml").text
+        text_no_html = text_no_html + " " + BeautifulSoup(str(text).replace("<br/>", " "), "lxml").text
     return text_no_html
 
 
@@ -63,18 +56,12 @@ def execute_scrapping(base_url, path_to_new):
                     j += 1
                     file_name = os.path.join(path_to_new, f"file_{str(j)}.txt")
                 # file_name = content_url.split("/")[-2]
-                text = clean_content(content_soup)
+                text = web_scrapping_tools.clean_content(content_soup)
                 save_new(text, file_name)
 
             except Exception as e:
-                print("Could not retreive pdf from: ", content_url, ", due to: ", e)
+                print("Could not retrieve pdf from: ", content_url, ", due to: ", e)
 
         i += 1
 
     return raw_text_in_pages
-
-
-if __name__ == '__main__':
-    url = "https://www.plenainclusion.org/noticias/?sf_paged="
-    path = 'C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/plena_inclusion_noticias/'
-    raw_text_in_pages = execute_scrapping(url, path)
