@@ -23,11 +23,13 @@ def extract_pdfs_from_webs():
                 planeta_facil.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion":
                 plena_inclusion.execute_scrapping(url, saving_path)
-            elif source == "plena_inclusion_aragon":
-                plena_inclusion_aragon.execute_scrapping(url, saving_path)
+            elif source == "plena_inclusion_aragon_noticias":
+                plena_inclusion_aragon_noticias.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion_extremadura":
                 plena_inclusion_extremadura.execute_scrapping(url, saving_path)
             elif source == "plena_inclusion_noticias":
                 plena_inclusion_noticias.execute_scrapping(url, saving_path)
             elif source == "transparencia_aragon":
                 transparencia_aragon.execute_scrapping(url, saving_path)
+            elif source == "plena_inclusion_turismo_facil":
+                plena_inclusion_turismo_facil.execute_scrapping(url, saving_path)
