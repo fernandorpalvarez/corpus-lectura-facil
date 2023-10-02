@@ -1,11 +1,11 @@
 import os
 import json
-from web_scrapping.web_sources import *
+from src.web_scrapping.web_sources import *
 
 
 def extract_pdfs_from_webs():
     # First get the config from the json file
-    config = json.load(open("../config/data_pipeline_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/web_scrapping_config.json.json", "r", encoding="utf-8"))
     sources = config["web_scrapping"]["sources"]
     base_saving_path = config["web_scrapping"]["saving_path"]
 

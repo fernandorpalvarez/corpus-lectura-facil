@@ -4,7 +4,7 @@ import json
 
 
 if __name__ == '__main__':
-    config = json.load(open("../config/data_pipeline_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
     pdfs_path = config["text_extraction"]["pdfs_path"]
     output_path_for_extracted_text = config["text_extraction"]["output_path_for_extracted_text"]
     rename_files_flag = config["text_extraction"]["rename_files_flag"]

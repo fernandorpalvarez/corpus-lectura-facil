@@ -3,7 +3,7 @@ import json
 
 
 if __name__ == '__main__':
-    config = json.load(open("../config/data_pipeline_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
     extracted_text_path = config["corpus_creation"]["extracted_text_path"]
     corpus_lectura_facil_path = config["corpus_creation"]["corpus_lectura_facil_path"]
 
