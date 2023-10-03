@@ -60,6 +60,7 @@ def apply_pipeline(df):
     df = apply_null_values_management(df)
     df = apply_stop_words_removal(df)
     df = apply_lemmatizing(df)
+    df = apply_ad_hoc_operations(df)
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
@@ -142,11 +143,13 @@ def apply_null_values_management(df):
     return df
 
 
-# Pending
+# Apply ad hoc operation which are not included in any other sections
 def apply_ad_hoc_operations(df):
-    pass
+    # Remove 1 len characters
+    df['text'] = df['text'].apply(lambda x: re.sub(r"(?=(^\S\s|\s\S\s|\s\S$))", "", str(x)))
+    return df
 
 
 # Saving results
-def save_dataframe_in_path(df, path):
-    df.to_csv(os.path.join(path, "lectura_facil.csv"), sep="|", index=False, encoding="utf-8")
+def save_dataframe_in_path(df, path, file_name="lectura_facil.csv"):
+    df.to_csv(os.path.join(path, file_name), sep="|", index=False, encoding="utf-8")
