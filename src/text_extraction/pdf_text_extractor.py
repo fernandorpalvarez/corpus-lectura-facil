@@ -27,8 +27,8 @@ def extract_text_from_pdfs_in_path(pdfs_path, output_path_for_extracted_text):
                 output_text_path = os.path.join(output_path_for_extracted_text, pdf_path.split(".pdf")[0]) + ".txt"
                 with open(output_text_path, 'w', encoding='utf-8') as f:
                     f.write(pdf_text)
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
         # Copy text files into new path
         elif pdf_path.endswith(".txt"):
