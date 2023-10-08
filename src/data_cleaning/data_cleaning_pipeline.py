@@ -3,10 +3,11 @@ import re
 import pandas as pd
 from bs4 import BeautifulSoup
 import nltk
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 import stanza
 from tqdm import tqdm
+
 
 # nltk.download('stopwords')
 # nltk.download('punkt')
@@ -58,8 +59,8 @@ def apply_pipeline(df):
     df = apply_special_char_removal(df)
     df = apply_minor_casing(df)
     df = apply_null_values_management(df)
-    df = apply_stop_words_removal(df)
-    df = apply_lemmatizing(df)
+    # df = apply_stop_words_removal(df)
+    # df = apply_lemmatizing(df)
     df = apply_ad_hoc_operations(df)
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -145,8 +146,21 @@ def apply_null_values_management(df):
 
 # Apply ad hoc operation which are not included in any other sections
 def apply_ad_hoc_operations(df):
+    def remove_one_char_str(row):
+        sp_stop_words = stopwords.words('spanish')
+
+        def f(s):
+            if len(s) == 1:
+                if s in sp_stop_words:
+                    pass
+                else:
+                    s = ""
+            return s
+
+        return " ".join(list(filter(None, list(map(f, row.split())))))
+
     # Remove 1 len characters
-    df['text'] = df['text'].apply(lambda x: re.sub(r"(?=(^\S\s|\s\S\s|\s\S$))", "", str(x)))
+    df['text'] = df['text'].apply(lambda x: remove_one_char_str(str(x)))
     return df
 
 

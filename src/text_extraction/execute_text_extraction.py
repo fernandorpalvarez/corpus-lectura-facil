@@ -14,4 +14,4 @@ if __name__ == '__main__':
         pdf_tool_manager.rename_files_in_path(pdfs_path)
 
     if extract_text_flag:
-        pdf_text_extractor.extract_text_from_pdfs_in_subdirs_path(pdfs_path, output_path_for_extracted_text)
+        pdf_text_extractor.save_text_from_pdfs_in_subdirs_to_csv(pdfs_path, output_path_for_extracted_text)

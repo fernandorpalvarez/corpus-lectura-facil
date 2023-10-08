@@ -1,5 +1,8 @@
 import os
 import shutil
+
+import pandas as pd
+import pandas.core.frame
 from PyPDF2 import PdfReader
 
 
@@ -18,7 +21,7 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 
-def extract_text_from_pdfs_in_path(pdfs_path, output_path_for_extracted_text):
+def extract_and_save_text_from_pdfs_in_path(pdfs_path, output_path_for_extracted_text):
     for pdf_path in os.listdir(pdfs_path):
         # Extract text from pdfs into txt files
         if pdf_path.endswith(".pdf"):
@@ -42,4 +45,51 @@ def extract_text_from_pdfs_in_subdirs_path(subdirs_path, output_path):
             output_path_for_extracted_text = os.path.join(output_path, root.split("/")[-1])
             if not os.path.isdir(output_path_for_extracted_text):
                 os.mkdir(output_path_for_extracted_text)
-            extract_text_from_pdfs_in_path(root, output_path_for_extracted_text)
+            extract_and_save_text_from_pdfs_in_path(root, output_path_for_extracted_text)
+
+
+def keep_extracted_text_from_path_in_df(path: str, text_df=None) -> pandas.core.frame.DataFrame:
+    """
+    Extract the text of the pdfs or txt files inside the path and returns them inside a pandas df
+    :param path: path which contains the files with the text
+    :param text_df: Optional parameter that contains the text already extracted from another path. The extracted text
+    from the current path will be appended inside this dataframe
+    :return: Pandas DataFrame with the extracted text
+    """
+    # Iterate over the pdfs in path
+    for pdf_path in os.listdir(path):
+        # 1. Extract the text of each pdf
+        if pdf_path.endswith(".pdf"):
+            try:
+                pdf_text = extract_text_from_pdf(os.path.join(path, pdf_path))
+            except Exception as e:
+                print("Error extracting text from ", os.path.join(path, pdf_path))
+                print(e)
+                continue
+
+        elif pdf_path.endswith(".txt"):
+            with open(os.path.join(path, pdf_path), 'r', encoding='utf-8') as f:
+                pdf_text = f.read()
+
+        # 2. Save the extracted text into a pd df as a new row
+        text_df.loc[len(text_df)] = [pdf_text]
+
+    # Return the pd df
+    return text_df
+
+
+def save_text_from_pdfs_in_subdirs_to_csv(subdirs_path, output_path):
+    """
+    Functions that iterates over the subdirs in the path, extract the text inside the pdfs and saves it in a pandas df
+    :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
+    :param output_path: The output path where the pandas df must be saved
+    :return: None. Saves the result inside csv file, if not, raises an exception
+    """
+    full_text_df = pd.DataFrame(columns=["text"])
+    for root, subdir, files in os.walk(subdirs_path):
+        if files:
+            full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
+    try:
+        full_text_df.to_csv(output_path)
+    except Exception as e:
+        print(e)
