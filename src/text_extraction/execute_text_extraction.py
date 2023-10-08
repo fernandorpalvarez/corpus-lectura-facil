@@ -4,6 +4,10 @@ import json
 
 
 if __name__ == '__main__':
+    '''
+       Pipeline to extract the raw text from the pdf files:
+           pdf -> raw
+    '''
     config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
     pdfs_path = config["text_extraction"]["pdfs_path"]
     output_path_for_extracted_text = config["text_extraction"]["output_path_for_extracted_text"]
