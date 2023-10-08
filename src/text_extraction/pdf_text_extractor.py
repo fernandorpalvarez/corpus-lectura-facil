@@ -78,18 +78,32 @@ def keep_extracted_text_from_path_in_df(path: str, text_df=None) -> pandas.core.
     return text_df
 
 
-def save_text_from_pdfs_in_subdirs_to_csv(subdirs_path, output_path):
+def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.DataFrame:
     """
     Functions that iterates over the subdirs in the path, extract the text inside the pdfs and saves it in a pandas df
     :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
-    :param output_path: The output path where the pandas df must be saved
-    :return: None. Saves the result inside csv file, if not, raises an exception
+    :return: Pandas DataFrame
     """
     full_text_df = pd.DataFrame(columns=["text"])
     for root, subdir, files in os.walk(subdirs_path):
         if files:
             full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
+
+    return full_text_df
+
+
+# Saving results
+def save_dataframe_in_path(df, path, file_name="lectura_facil.csv", separator="|"):
+    """
+    Function that saves the specified df into a csv file
+    :param df: Dataframe to save in path
+    :param path: The output path where the df must be saved
+    :param file_name: File name of the csv in which the df is going to be dumped
+    :param separator: Separator for the csv file
+    :return: None. Saves the result inside csv file, if not, raises an exception
+    """
     try:
-        full_text_df.to_csv(output_path)
+        df.to_csv(os.path.join(path, file_name), sep=separator, index=False, encoding="utf-8")
     except Exception as e:
         print(e)
+

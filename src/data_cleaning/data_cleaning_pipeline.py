@@ -42,42 +42,40 @@ def load_text_in_lectura_facil_from_path(path):
     return combined_df
 
 
-def apply_tokenization(text):
-    # Define the regular expression pattern for the separator
-    separator_pattern = r'\.\n+|\?|\!\. +'
-
-    # Split the string into records using the separator pattern
-    tokens = re.compile(separator_pattern).split(text)
-
-    return tokens
+def load_text_from_csv(path, separator="|"):
+    return pd.read_csv(path, sep=separator, encoding="utf-8")
 
 
 def apply_pipeline(df):
-    df = apply_html_tag_removal(df)
-    df = apply_add_space_before_uppercase(df)
-    df = apply_numeric_char_removal(df)
     df = apply_special_char_removal(df)
-    df = apply_minor_casing(df)
-    df = apply_null_values_management(df)
-    # df = apply_stop_words_removal(df)
-    # df = apply_lemmatizing(df)
-    df = apply_ad_hoc_operations(df)
-    df.drop_duplicates(inplace=True)
-    df.reset_index(drop=True, inplace=True)
+    df = apply_tokenization(df)
+    df = remove_rows_based_on_length(df, min_l=14, max_l=150)
 
-    return df
-
-
-def apply_add_space_before_uppercase(df):
-    # Use a regular expression to add a space before all uppercase characters
-    df['text'] = df['text'].apply(lambda x: re.sub(r'([A-Z])', r' \1', str(x)))
     return df
 
 
 # Special characters removal
 def apply_special_char_removal(df):
-    df['text'] = df['text'].apply(lambda x: re.sub(r'\W', " ", str(x), 0, re.IGNORECASE))
+    df['text'] = df['text'].apply(lambda x: re.sub(r'/[^0-9a-zA-Z.]/g', " ", str(x), 0, re.IGNORECASE))
     df['text'] = df['text'].apply(lambda x: re.sub(r"\s+", " ", str(x), 0, re.IGNORECASE))
+    return df
+
+
+def apply_tokenization(df):
+    df = df.assign(text=df['text'].str.split('.')).explode('text')
+    return df.reset_index(drop=True)
+
+
+def remove_rows_based_on_length(df, min_l, max_l):
+    df = df[df['text'].map(len) > min_l]
+    return df[df['text'].map(len) < max_l]
+
+
+def apply_add_space_before_uppercase(df):
+    # Use a regular expression to add a space before all uppercase characters
+    # df['text'] = df['text'].apply(lambda x: re.sub(r'([A-Z])', r' \1', str(x)))
+    df['text'] = df['text'].apply(lambda x: re.sub(r'[A-Z]+[a-z]*', r' \1', str(x)))
+
     return df
 
 
@@ -146,24 +144,36 @@ def apply_null_values_management(df):
 
 # Apply ad hoc operation which are not included in any other sections
 def apply_ad_hoc_operations(df):
-    def remove_one_char_str(row):
-        sp_stop_words = stopwords.words('spanish')
-
-        def f(s):
-            if len(s) == 1:
-                if s in sp_stop_words:
-                    pass
-                else:
-                    s = ""
-            return s
-
-        return " ".join(list(filter(None, list(map(f, row.split())))))
-
     # Remove 1 len characters
     df['text'] = df['text'].apply(lambda x: remove_one_char_str(str(x)))
     return df
 
 
+def remove_one_char_str(row):
+    sp_stop_words = stopwords.words('spanish')
+
+    def f(s):
+        if len(s) == 1:
+            if s in sp_stop_words:
+                pass
+            else:
+                s = ""
+        return s
+
+    return " ".join(list(filter(None, list(map(f, row.split())))))
+
+
 # Saving results
-def save_dataframe_in_path(df, path, file_name="lectura_facil.csv"):
-    df.to_csv(os.path.join(path, file_name), sep="|", index=False, encoding="utf-8")
+def save_dataframe_in_path(df, path, file_name="lectura_facil.csv", separator="|"):
+    """
+    Function that saves the specified df into a csv file
+    :param df: Dataframe to save in path
+    :param path: The output path where the df must be saved
+    :param file_name: File name of the csv in which the df is going to be dumped
+    :param separator: Separator for the csv file
+    :return: None. Saves the result inside csv file, if not, raises an exception
+    """
+    try:
+        df.to_csv(os.path.join(path, file_name), sep=separator, index=False, encoding="utf-8")
+    except Exception as e:
+        print(e)
