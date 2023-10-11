@@ -7,6 +7,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import stanza
 from tqdm import tqdm
+import html
 
 
 # nltk.download('stopwords')
@@ -49,7 +50,7 @@ def load_text_from_csv(path, separator="|"):
 def apply_pipeline(df):
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
-    df = remove_rows_based_on_length(df, min_l=14, max_l=150)
+    df = remove_rows_based_on_length(df, min_l=14)
     df = apply_add_space_between_words(df)
 
     return df
@@ -57,6 +58,7 @@ def apply_pipeline(df):
 
 # Special characters removal
 def apply_special_char_removal(df):
+    df['text'] = df['text'].apply(lambda x: str(x).replace("…", "..."))
     df['text'] = df['text'].apply(lambda x: re.sub(r'[^a-zA-Z0-9\s¿?¡!,.;:\u0080-\u024F]', " ", str(x), 0, re.IGNORECASE))
     df['text'] = df['text'].apply(lambda x: re.sub(r"\s+", " ", str(x), 0, re.IGNORECASE))
     return df
@@ -70,9 +72,12 @@ def apply_tokenization(df):
     return df.reset_index(drop=True)
 
 
-def remove_rows_based_on_length(df, min_l, max_l):
-    df = df[df['text'].map(len) > min_l]
-    return df[df['text'].map(len) < max_l]
+def remove_rows_based_on_length(df, min_l=None, max_l=None):
+    if min_l:
+        df = df[df['text'].map(len) > min_l]
+    if max_l:
+        df = df[df['text'].map(len) < max_l]
+    return df
 
 
 def apply_add_space_between_words(df):
