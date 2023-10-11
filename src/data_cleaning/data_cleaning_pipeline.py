@@ -50,19 +50,23 @@ def apply_pipeline(df):
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
     df = remove_rows_based_on_length(df, min_l=14, max_l=150)
+    df = apply_add_space_between_words(df)
 
     return df
 
 
 # Special characters removal
 def apply_special_char_removal(df):
-    df['text'] = df['text'].apply(lambda x: re.sub(r'/[^0-9a-zA-Z.]/g', " ", str(x), 0, re.IGNORECASE))
+    df['text'] = df['text'].apply(lambda x: re.sub(r'[^a-zA-Z0-9\s¿?¡!,.;:\u0080-\u024F]', " ", str(x), 0, re.IGNORECASE))
     df['text'] = df['text'].apply(lambda x: re.sub(r"\s+", " ", str(x), 0, re.IGNORECASE))
     return df
 
 
 def apply_tokenization(df):
-    df = df.assign(text=df['text'].str.split('.')).explode('text')
+    text_series = df['text'].str.split('.')
+    df = df.assign(text=text_series).explode('text')
+    df['text'] = df['text'].apply(lambda x: str(x).rstrip() + ".")
+
     return df.reset_index(drop=True)
 
 
@@ -71,10 +75,9 @@ def remove_rows_based_on_length(df, min_l, max_l):
     return df[df['text'].map(len) < max_l]
 
 
-def apply_add_space_before_uppercase(df):
-    # Use a regular expression to add a space before all uppercase characters
-    # df['text'] = df['text'].apply(lambda x: re.sub(r'([A-Z])', r' \1', str(x)))
-    df['text'] = df['text'].apply(lambda x: re.sub(r'[A-Z]+[a-z]*', r' \1', str(x)))
+def apply_add_space_between_words(df):
+    # Use a regular expression to add a space after all minorcase characters followed by an uppercase characters
+    df['text'] = df['text'].apply(lambda x: re.sub(r'([a-z])([A-Z])', r"\1 \2", str(x)))
 
     return df
 
