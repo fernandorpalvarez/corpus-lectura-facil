@@ -18,7 +18,6 @@ import html
 # Data gathering (tokenization)
 def load_text_in_lectura_facil_from_path(path):
     combined_df = pd.DataFrame()
-    full_str = ""
     # Iterate over the path
     for root, subdirs, files in os.walk(path):
         if files:
@@ -50,7 +49,7 @@ def load_text_from_csv(path, separator="|"):
 def apply_pipeline(df):
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
-    df = remove_rows_based_on_length(df, min_l=14)
+    df = remove_rows_based_on_length(df, min_l=25)
     df = apply_add_space_between_words(df)
 
     return df

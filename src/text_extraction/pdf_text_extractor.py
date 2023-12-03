@@ -4,6 +4,7 @@ import shutil
 import pandas as pd
 import pandas.core.frame
 from PyPDF2 import PdfReader
+from tqdm import tqdm
 
 
 def extract_text_from_pdf(pdf_path):
@@ -48,7 +49,7 @@ def extract_text_from_pdfs_in_subdirs_path(subdirs_path, output_path):
             extract_and_save_text_from_pdfs_in_path(root, output_path_for_extracted_text)
 
 
-def keep_extracted_text_from_path_in_df(path: str, text_df=None) -> pandas.core.frame.DataFrame:
+def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.DataFrame) -> pandas.core.frame.DataFrame:
     """
     Extract the text of the pdfs or txt files inside the path and returns them inside a pandas df
     :param path: path which contains the files with the text
@@ -56,8 +57,12 @@ def keep_extracted_text_from_path_in_df(path: str, text_df=None) -> pandas.core.
     from the current path will be appended inside this dataframe
     :return: Pandas DataFrame with the extracted text
     """
+    # TODO: Quitar este codigo
+    print("Extrayendo...", path.split("/")[-1])
+    text_df = pd.DataFrame(columns=["text"])
+
     # Iterate over the pdfs in path
-    for pdf_path in os.listdir(path):
+    for pdf_path in tqdm(os.listdir(path)):
         # 1. Extract the text of each pdf
         if pdf_path.endswith(".pdf"):
             try:
@@ -73,6 +78,12 @@ def keep_extracted_text_from_path_in_df(path: str, text_df=None) -> pandas.core.
 
         # 2. Save the extracted text into a pd df as a new row
         text_df.loc[len(text_df)] = [pdf_text]
+
+    # TODO: Quitar este codigo
+    save_dataframe_in_path(text_df, os.path.join("C:/Users/ferna/Universidad Politécnica de Madrid/Linea "
+                                                      "Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil "
+                                                      "(2023) - Documentos/data/extracted_text_pipeline/raw/",
+                                                      path.split("/")[-1] + ".csv"))
 
     # Return the pd df
     return text_df

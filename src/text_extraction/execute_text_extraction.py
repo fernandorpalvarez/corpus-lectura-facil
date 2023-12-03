@@ -21,4 +21,5 @@ if __name__ == '__main__':
     # First extract the text from all the pdfs in the subdirs
     full_text_df = pdf_text_extractor.extract_text_from_pdfs_in_subdirs_to_df(pdfs_path)
     # Lastly save the extracted text into csv file
-    pdf_text_extractor.save_dataframe_in_path(full_text_df, output_path_for_extracted_text, file_name, separator)
+    # TODO: Descomentar este codigo
+    # pdf_text_extractor.save_dataframe_in_path(full_text_df, output_path_for_extracted_text, file_name, separator)
