@@ -5,12 +5,12 @@ import pandas as pd
 import pandas.core.frame
 from PyPDF2 import PdfReader
 from tqdm import tqdm
-from pdfminer.high_level import extract_text, extract_pages
+from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextContainer, LTTextBox
 import fitz
 
 
-def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pypdf2", n_pages=1):
+def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pdf_miner", n_pages=1):
     # defining the text variable
     text = ""
     if pdf_extractor_engine == "pypdf2":
@@ -60,7 +60,8 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
     :return: Pandas DataFrame with the extracted text
     """
     config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
-    pdf_extractor_engine = config["text_extraction"]["pdf_extractor_engine"]
+    pdf_extractor_engine = config["pdf_extractor_engine"]
+    n_pages_to_skip = config["n_pages_to_skip"]
 
     # Iterate over the pdfs in path
     for pdf_name in tqdm(os.listdir(path)):
@@ -68,7 +69,8 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
         if pdf_name.endswith(".pdf"):
             try:
                 pdf_text = extract_text_from_pdf(os.path.join(path, pdf_name),
-                                                 pdf_extractor_engine=pdf_extractor_engine)
+                                                 pdf_extractor_engine=pdf_extractor_engine,
+                                                 n_pages=n_pages_to_skip)
             except Exception as e:
                 print("Error extracting text from ", os.path.join(path, pdf_name))
                 print(e)

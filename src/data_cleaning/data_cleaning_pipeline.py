@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import pandas as pd
@@ -7,7 +8,6 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import stanza
 from tqdm import tqdm
-import html
 
 
 # nltk.download('stopwords')
@@ -15,60 +15,77 @@ import html
 # stanza.download("es")
 
 
-# Data gathering (tokenization)
-def load_text_in_lectura_facil_from_path(path):
-    combined_df = pd.DataFrame()
-    # Iterate over the path
-    for root, subdirs, files in os.walk(path):
-        if files:
-            for file in files:
-                # Read the entire text file into a single string
-                with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
-                    data = f.read()
-
-                tokens = apply_tokenization(data)
-
-                # Cleanup jump line characters
-                tokens = [r.replace("\n", " ") for r in tokens]
-
-                # Create a DataFrame from the records
-                df = pd.DataFrame({'text': tokens})
-
-                # Combine the results
-                combined_df = pd.concat([combined_df, df])
-
-                combined_df.reset_index(inplace=True, drop=True)
-
-    return combined_df
-
-
 def load_text_from_csv(path, separator="|"):
     return pd.read_csv(path, sep=separator, encoding="utf-8")
 
 
 def apply_pipeline(df):
+    # Get the config from json file
+    config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
+    min_len_for_line = config["min_len_for_line"]
+    max_len_for_line = config["max_len_for_line"]
+    min_dig_number = config["min_dig_number"]
+
+    # Apply pipeline over the data
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
-    df = remove_rows_based_on_length(df, min_l=35)
+    df = apply_special_line_removal(df, min_dig_number=min_dig_number)
+    df = remove_rows_based_on_length(df, min_l=min_len_for_line, max_l=max_len_for_line)
     df = apply_add_space_between_words(df)
+
+    df.drop_duplicates(inplace=True)
 
     return df
 
 
 # Special characters removal
 def apply_special_char_removal(df):
+    # Pattern for replacing "…" character with three dots
     df['text'] = df['text'].apply(lambda x: str(x).replace("…", "..."))
-    df['text'] = df['text'].apply(lambda x: re.sub(r'[^a-zA-Z0-9\s¿?¡!,.;:\u0080-\u024F]', " ", str(x), 0, re.IGNORECASE))
-    df['text'] = df['text'].apply(lambda x: re.sub(r"\s+", " ", str(x), 0, re.IGNORECASE))
+
+    # Pattern that matches strings starting with numbers, numbers followed by ª or only ª or »
+    pattern_multiline = r'^\d+ª|^\d+\s*|^ª|»'
+    df['text'] = df['text'].apply(lambda x: re.sub(pattern_multiline, " ", str(x), 0, re.MULTILINE))
+
+    # Patterns for unnicode matches
+    patterns_ignorecase = [r'[^a-zA-Z0-9\s¿?¡!,.;:\u0080-\u024F]', r'\x83', r'\x92', r'\s+']
+    for pattern in patterns_ignorecase:
+        df['text'] = df['text'].apply(lambda x: re.sub(pattern, " ", str(x), 0, re.IGNORECASE))
+
     return df
 
 
 def apply_tokenization(df):
-    text_series = df['text'].str.split('.')
+    """
+    Apply tokenization based on pattern
+    :param df: DaraFrame to be tokenized
+    :return: Tokenized DataFrame
+    """
+    pattern = r'\.\s+|\.\n+|\n'
+    text_series = df['text'].str.split(pattern)
     df = df.assign(text=text_series).explode('text')
     df['text'] = df['text'].apply(lambda x: str(x).rstrip() + ".")
 
     return df.reset_index(drop=True)
+
+
+def apply_special_line_removal(df, min_dig_number=3):
+    """
+    Function that removes the lines that contain more than n numerical digits
+    :param df: DataFrame to be filtered.
+    :param min_dig_number: Minimum number of numerical digits that a row must contain to be filtered
+    :return: Filtered DataFrame
+    """
+    # Create a boolean mask based on digit len
+    mask = df['text'].str.count(r'\d') > min_dig_number
+
+    # Filter DataFrame in order to keep only the rows that match the mask
+    df = df[~mask]
+
+    df = df[~df['text'].str.contains('©')]
+    df = df[~df['text'].str.contains('www')]
+
+    return df
 
 
 def remove_rows_based_on_length(df, min_l=None, max_l=None):
@@ -84,6 +101,11 @@ def apply_add_space_between_words(df):
     df['text'] = df['text'].apply(lambda x: re.sub(r'([a-z])([A-Z])', r"\1 \2", str(x)))
 
     return df
+
+
+"""
+    Functions for ML model data cleaning
+"""
 
 
 # Minor case conversion
