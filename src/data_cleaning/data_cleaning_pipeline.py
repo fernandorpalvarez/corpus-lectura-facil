@@ -49,7 +49,7 @@ def load_text_from_csv(path, separator="|"):
 def apply_pipeline(df):
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
-    df = remove_rows_based_on_length(df, min_l=25)
+    df = remove_rows_based_on_length(df, min_l=35)
     df = apply_add_space_between_words(df)
 
     return df

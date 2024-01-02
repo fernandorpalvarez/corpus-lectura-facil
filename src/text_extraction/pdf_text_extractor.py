@@ -1,52 +1,38 @@
+import json
 import os
-import shutil
 
 import pandas as pd
 import pandas.core.frame
 from PyPDF2 import PdfReader
 from tqdm import tqdm
+from pdfminer.high_level import extract_text
+import fitz
 
 
-def extract_text_from_pdf(pdf_path):
+def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pypdf2"):
     # defining the text variable
     text = ""
+    if pdf_extractor_engine == "pypdf2":
+        # creating a pdf reader object
+        reader = PdfReader(pdf_path)
 
-    # creating a pdf reader object
-    reader = PdfReader(pdf_path)
+        # iterate over the pages in pdf file
+        for page in reader.pages:
+            # extracting text from page
+            text += page.extract_text()
 
-    # iterate over the pages in pdf file
-    for page in reader.pages:
-        # extracting text from page
-        text += page.extract_text()
+    elif pdf_extractor_engine == "pdf_miner":
+        text = extract_text(pdf_path)
+
+    elif pdf_extractor_engine == "fitz":
+        doc = fitz.open(pdf_path)  # open a document
+        for page in doc:  # iterate the document pages
+            text += page.get_text()  # get plain text encoded as UTF-8
+
+    else:
+        raise Exception("You must specify a valid pdf extractor engine")
 
     return text
-
-
-def extract_and_save_text_from_pdfs_in_path(pdfs_path, output_path_for_extracted_text):
-    for pdf_path in os.listdir(pdfs_path):
-        # Extract text from pdfs into txt files
-        if pdf_path.endswith(".pdf"):
-            try:
-                pdf_text = extract_text_from_pdf(os.path.join(pdfs_path, pdf_path))
-                output_text_path = os.path.join(output_path_for_extracted_text, pdf_path.split(".pdf")[0]) + ".txt"
-                with open(output_text_path, 'w', encoding='utf-8') as f:
-                    f.write(pdf_text)
-            except Exception as e:
-                print(e)
-
-        # Copy text files into new path
-        elif pdf_path.endswith(".txt"):
-            output_text_path = os.path.join(output_path_for_extracted_text, pdf_path)
-            shutil.copy2(os.path.join(pdfs_path, pdf_path), output_text_path)
-
-
-def extract_text_from_pdfs_in_subdirs_path(subdirs_path, output_path):
-    for root, subdir, files in os.walk(subdirs_path):
-        if files:
-            output_path_for_extracted_text = os.path.join(output_path, root.split("/")[-1])
-            if not os.path.isdir(output_path_for_extracted_text):
-                os.mkdir(output_path_for_extracted_text)
-            extract_and_save_text_from_pdfs_in_path(root, output_path_for_extracted_text)
 
 
 def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.DataFrame) -> pandas.core.frame.DataFrame:
@@ -57,33 +43,27 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
     from the current path will be appended inside this dataframe
     :return: Pandas DataFrame with the extracted text
     """
-    # TODO: Quitar este codigo
-    print("Extrayendo...", path.split("/")[-1])
-    text_df = pd.DataFrame(columns=["text"])
+    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
+    pdf_extractor_engine = config["text_extraction"]["pdf_extractor_engine"]
 
     # Iterate over the pdfs in path
-    for pdf_path in tqdm(os.listdir(path)):
-        # 1. Extract the text of each pdf
-        if pdf_path.endswith(".pdf"):
+    for pdf_name in tqdm(os.listdir(path)):
+        # 1. Extract the text of each pdf or txt file
+        if pdf_name.endswith(".pdf"):
             try:
-                pdf_text = extract_text_from_pdf(os.path.join(path, pdf_path))
+                pdf_text = extract_text_from_pdf(os.path.join(path, pdf_name),
+                                                 pdf_extractor_engine=pdf_extractor_engine)
             except Exception as e:
-                print("Error extracting text from ", os.path.join(path, pdf_path))
+                print("Error extracting text from ", os.path.join(path, pdf_name))
                 print(e)
                 continue
 
-        elif pdf_path.endswith(".txt"):
-            with open(os.path.join(path, pdf_path), 'r', encoding='utf-8') as f:
+        elif pdf_name.endswith(".txt"):
+            with open(os.path.join(path, pdf_name), 'r', encoding='utf-8') as f:
                 pdf_text = f.read()
 
         # 2. Save the extracted text into a pd df as a new row
         text_df.loc[len(text_df)] = [pdf_text]
-
-    # TODO: Quitar este codigo
-    save_dataframe_in_path(text_df, os.path.join("C:/Users/ferna/Universidad Politécnica de Madrid/Linea "
-                                                      "Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil "
-                                                      "(2023) - Documentos/data/extracted_text_pipeline/raw/",
-                                                      path.split("/")[-1] + ".csv"))
 
     # Return the pd df
     return text_df
@@ -117,4 +97,3 @@ def save_dataframe_in_path(df, path, file_name="lectura_facil.csv", separator="|
         df.to_csv(os.path.join(path, file_name), sep=separator, index=False, encoding="utf-8")
     except Exception as e:
         print(e)
-
