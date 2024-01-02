@@ -5,29 +5,45 @@ import pandas as pd
 import pandas.core.frame
 from PyPDF2 import PdfReader
 from tqdm import tqdm
-from pdfminer.high_level import extract_text
+from pdfminer.high_level import extract_text, extract_pages
+from pdfminer.layout import LTTextContainer, LTTextBox
 import fitz
 
 
-def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pypdf2"):
+def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pypdf2", n_pages=1):
     # defining the text variable
     text = ""
     if pdf_extractor_engine == "pypdf2":
         # creating a pdf reader object
         reader = PdfReader(pdf_path)
-
         # iterate over the pages in pdf file
-        for page in reader.pages:
-            # extracting text from page
-            text += page.extract_text()
+        for page_num, page in enumerate(reader.pages):
+            # Skip the first n pages
+            if page_num > n_pages:
+                # extracting text from page
+                text += page.extract_text()
 
     elif pdf_extractor_engine == "pdf_miner":
-        text = extract_text(pdf_path)
+        # iterate over the pages in pdf file
+        for page_num, page_layout in enumerate(extract_pages(pdf_path)):
+            # Skip the first n pages
+            if page_num > n_pages:
+                for element in page_layout:
+                    if isinstance(element, LTTextContainer):
+                        text += element.get_text()
+                    elif isinstance(element, LTTextBox):
+                        for line in element:
+                            text += line.get_text()
 
     elif pdf_extractor_engine == "fitz":
-        doc = fitz.open(pdf_path)  # open a document
-        for page in doc:  # iterate the document pages
-            text += page.get_text()  # get plain text encoded as UTF-8
+        # open a document
+        doc = fitz.open(pdf_path)
+        # iterate the document pages
+        for page_num, page in enumerate(doc):
+            # Skip the first n pages
+            if page_num > n_pages:
+                # get plain text encoded as UTF-8
+                text += page.get_text()
 
     else:
         raise Exception("You must specify a valid pdf extractor engine")
