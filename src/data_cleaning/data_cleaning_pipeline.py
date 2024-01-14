@@ -19,7 +19,7 @@ def load_text_from_csv(path, separator="|"):
     return pd.read_csv(path, sep=separator, encoding="utf-8")
 
 
-def apply_pipeline(df):
+def apply_cleaning_pipeline(df):
     # Get the config from json file
     config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
     min_len_for_line = config["min_len_for_line"]
@@ -27,6 +27,7 @@ def apply_pipeline(df):
     min_dig_number = config["min_dig_number"]
 
     # Apply pipeline over the data
+    df = apply_multiple_dots_substitution(df)
     df = apply_special_char_removal(df)
     df = apply_tokenization(df)
     df = apply_special_line_removal(df, min_dig_number=min_dig_number)
@@ -102,6 +103,12 @@ def apply_add_space_between_words(df):
 
     return df
 
+
+def apply_multiple_dots_substitution(df):
+    # Use a regular expression to replace strings of more than 3 dots in a row with just one dot
+    df['text'] = df['text'].apply(lambda x: re.sub(r'\.{4,}', r".", str(x)))
+
+    return df
 
 """
     Functions for ML model data cleaning

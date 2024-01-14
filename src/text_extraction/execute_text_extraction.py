@@ -9,11 +9,11 @@ if __name__ == '__main__':
            pdf -> raw
     '''
     config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
-    pdfs_path = config["text_extraction"]["pdfs_path"]
-    output_path_for_extracted_text = config["text_extraction"]["output_path_for_extracted_text"]
-    file_name = config["text_extraction"]["file_name"]
-    separator = config["text_extraction"]["separator"]
-    rename_files_flag = config["text_extraction"]["rename_files_flag"]
+    pdfs_path = config["pdfs_path"]
+    output_path_for_extracted_text = config["output_path_for_extracted_text"]
+    file_name = config["file_name"]
+    separator = config["separator"]
+    rename_files_flag = config["rename_files_flag"]
 
     if rename_files_flag:
         pdf_tool_manager.rename_files_in_path(pdfs_path)

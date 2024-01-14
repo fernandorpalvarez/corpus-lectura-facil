@@ -93,6 +93,7 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
     :return: Pandas DataFrame
     """
+    print("Extracting text from raw files...")
     full_text_df = pd.DataFrame(columns=["text"])
     for root, subdir, files in os.walk(subdirs_path):
         if files:
@@ -102,7 +103,7 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
 
 
 # Saving results
-def save_dataframe_in_path(df, path, file_name="lectura_facil.csv", separator="|"):
+def save_dataframe_in_path(df, path, file_name="raw_text.csv", separator="|"):
     """
     Function that saves the specified df into a csv file
     :param df: Dataframe to save in path
