@@ -1,4 +1,5 @@
 from src.data_cleaning.data_cleaning_pipeline import *
+from src.tools import dataframe_tools
 import json
 
 
@@ -12,11 +13,10 @@ if __name__ == '__main__':
     raw_file_name = config["raw_file_name"]
     clean_text_path = config["clean_text_path"]
     clean_file_name = config["clean_file_name"]
-    separator = config["separator"]
 
     # Get the text
-    raw_text_df = load_text_from_csv(os.path.join(extracted_text_path, raw_file_name), separator)
+    raw_text_df = dataframe_tools.read_dataframe(extracted_text_path, raw_file_name)
     # Preprocess it
     clean_text_df = apply_cleaning_pipeline(raw_text_df)
     # Save it
-    save_dataframe_in_path(clean_text_df, clean_text_path, clean_file_name, separator)
+    dataframe_tools.write_dataframe(clean_text_df, clean_text_path, clean_file_name)

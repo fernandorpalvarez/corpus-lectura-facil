@@ -1,0 +1,12 @@
+{
+  "read": {
+    "separator": "|",
+    "default_extension": ".csv",
+    "encoding": "utf-8"
+  },
+  "write": {
+    "separator": "|",
+    "default_extension": ".csv",
+    "encoding": "utf-8"
+  }
+}

@@ -8,5 +8,5 @@ if __name__ == '__main__':
             clean -> transform
     '''
     config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
-    extracted_text_path = config["corpus_creation"]["extracted_text_path"]
-    corpus_lectura_facil_path = config["corpus_creation"]["corpus_lectura_facil_path"]
+    extracted_text_path = config["extracted_text_path"]
+    corpus_lectura_facil_path = config["corpus_lectura_facil_path"]

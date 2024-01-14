@@ -99,6 +99,8 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
         if files:
             full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
 
+    print("Complete!")
+
     return full_text_df
 
 

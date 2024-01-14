@@ -2,8 +2,7 @@
   "pdf_extractor_engine": "pdf_miner",
   "n_pages_to_skip": 1,
   "rename_files_flag": false,
-  "pdfs_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/",
+  "pdfs_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_test/",
   "output_path_for_extracted_text": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/extracted_text_pipeline/raw/",
-  "file_name": "raw_text.csv",
-  "separator": "|"
+  "file_name": "raw_text_test"
 }

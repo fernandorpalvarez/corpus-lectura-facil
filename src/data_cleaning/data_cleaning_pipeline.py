@@ -20,6 +20,8 @@ def load_text_from_csv(path, separator="|"):
 
 
 def apply_cleaning_pipeline(df):
+    print("Cleaning text from raw path...")
+
     # Get the config from json file
     config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
     min_len_for_line = config["min_len_for_line"]
@@ -35,6 +37,8 @@ def apply_cleaning_pipeline(df):
     df = apply_add_space_between_words(df)
 
     df.drop_duplicates(inplace=True)
+
+    print("Complete!")
 
     return df
 
