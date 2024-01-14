@@ -1,0 +1,43 @@
+{
+  "web_scrapping": {
+    "sources": {
+      "asociacion_lectura_facil": {
+        "execute": false,
+        "url": "https://repositori.lecturafacil.net/es/taxonomy/term/1?page="
+      },
+      "cedid": {
+        "execute": false,
+        "url": "https://katalogoa.siis.net/Search/Results?lookfor=LFCL&type=AllFields&sort=year&filter%5B%5D=quitar_facet%3A%22database_facet%22&filter%5B%5D=%7Elanguage%3A%22Spanish%22&page="
+      },
+      "planeta_facil": {
+        "execute": false,
+        "url": "https://planetafacil.plenainclusion.org/noticias/"
+      },
+      "plena_inclusion": {
+        "execute": false,
+        "url": "https://www.plenainclusion.org/publicaciones/buscador/?_sfm_descargable_lectura_facil=1&sf_paged="
+      },
+      "plena_inclusion_aragon_noticias": {
+        "execute": false,
+        "url": "https://www.plenainclusionaragon.org/cea/lf/es/"
+      },
+      "plena_inclusion_extremadura": {
+        "execute": false,
+        "url": "https://plenainclusionextremadura.org/plenainclusion/actualidad/noticias?page="
+      },
+      "plena_inclusion_noticias": {
+        "execute": false,
+        "url": "https://www.plenainclusion.org/noticias/?sf_paged="
+      },
+      "transparencia_aragon": {
+        "execute": false,
+        "url": "https://transparencia.aragon.es/GobiernoFacil"
+      },
+      "plena_inclusion_turismo_facil": {
+        "execute": true,
+        "url": "https://www.plenainclusion.org/l/mapa-del-turismo-facil-en-espana/"
+      }
+    },
+    "saving_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/"
+  }
+}
