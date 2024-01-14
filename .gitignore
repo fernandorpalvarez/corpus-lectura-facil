@@ -1,6 +1,5 @@
 *.pdf
 *.ipynb
-*.json
 *.xml
 *.iml
 /.idea/.gitignore
