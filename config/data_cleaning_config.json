@@ -1,9 +1,0 @@
-{
-  "extracted_text_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/extracted_text_pipeline/raw/",
-  "raw_file_name": "raw_text_test",
-  "clean_text_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/extracted_text_pipeline/clean/",
-  "clean_file_name": "clean_text_test",
-  "min_len_for_line": 30,
-  "max_len_for_line": 70,
-  "min_dig_number": 4
-}
