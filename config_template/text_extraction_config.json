@@ -1,0 +1,8 @@
+{
+  "pdf_extractor_engine": "pdf_miner",
+  "n_pages_to_skip": 1,
+  "rename_files_flag": false,
+  "pdfs_path": "Absolute path to pdfs path",
+  "output_path_for_extracted_text": "Absolute path to raw path",
+  "file_name": "raw_text"
+}

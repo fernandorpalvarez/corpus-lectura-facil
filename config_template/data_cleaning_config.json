@@ -1,0 +1,9 @@
+{
+  "extracted_text_path": "Absolute path to raw path",
+  "raw_file_name": "raw_text",
+  "clean_text_path": "Absolute path to clean path",
+  "clean_file_name": "clean_text",
+  "min_len_for_line": 30,
+  "max_len_for_line": 70,
+  "min_dig_number": 4
+}
