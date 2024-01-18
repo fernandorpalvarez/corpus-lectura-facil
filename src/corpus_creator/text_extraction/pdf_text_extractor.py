@@ -59,7 +59,7 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
     from the current path will be appended inside this dataframe
     :return: Pandas DataFrame with the extracted text
     """
-    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../../config/text_extraction_config.json", "r", encoding="utf-8"))
     pdf_extractor_engine = config["pdf_extractor_engine"]
     n_pages_to_skip = config["n_pages_to_skip"]
 
@@ -104,7 +104,6 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     return full_text_df
 
 
-# Saving results
 def save_dataframe_in_path(df, path, file_name="raw_text.csv", separator="|"):
     """
     Function that saves the specified df into a csv file
@@ -118,3 +117,33 @@ def save_dataframe_in_path(df, path, file_name="raw_text.csv", separator="|"):
         df.to_csv(os.path.join(path, file_name), sep=separator, index=False, encoding="utf-8")
     except Exception as e:
         print(e)
+
+
+def rename_files_in_path(folder_path):
+    data_type = "pdf"
+    i = 0
+    for file_path in tqdm(os.listdir(folder_path)):
+        old_name = os.path.join(folder_path, file_path)
+        if old_name.endswith(".txt"):
+            data_type = "txt"
+        elif old_name.endswith(".pdf"):
+            data_type = "pdf"
+
+        new_name = os.path.join(folder_path, f"{data_type}_{str(i)}.{data_type}")
+        while os.path.isfile(new_name):
+            i += 1
+            new_name = os.path.join(folder_path, f"{data_type}_{str(i)}.{data_type}")
+
+        os.rename(old_name, new_name)
+        i += 1
+
+
+def tag_data(df: pd.DataFrame, tag: object) -> pd.DataFrame:
+    """
+    Function that append a new column called class to a dataframe
+    :param df: DataFrame to which will add the new class column
+    :param tag: Class to be associated to the whole dataset
+    :return: pd.DataFrame
+    """
+    df["class"] = tag
+    return df.copy(deep=True)

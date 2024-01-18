@@ -1,5 +1,5 @@
-from src.data_cleaning.data_cleaning_pipeline import *
-from src.tools import dataframe_tools
+from src.corpus_creator.data_cleaning_impl.data_cleaning_pipeline import *
+from src.corpus_creator.tools import dataframe_tools
 import json
 
 

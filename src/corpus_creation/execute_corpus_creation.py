@@ -1,7 +1,6 @@
 from corpus_combiner import *
 import json
-from src.tools import dataframe_tools
-
+from src.corpus_creator.tools import dataframe_tools
 
 if __name__ == '__main__':
     '''

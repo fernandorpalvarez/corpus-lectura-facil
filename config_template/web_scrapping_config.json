@@ -34,8 +34,12 @@
         "url": "https://transparencia.aragon.es/GobiernoFacil"
       },
       "plena_inclusion_turismo_facil": {
-        "execute": true,
+        "execute": false,
         "url": "https://www.plenainclusion.org/l/mapa-del-turismo-facil-en-espana/"
+      },
+      "easy_news": {
+        "execute": false,
+        "url": "https://easynewsportal.eu/index.php?lang=es"
       }
     },
     "saving_path": "Absolute path to raw path"

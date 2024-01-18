@@ -1,7 +1,6 @@
-import pdf_text_extractor
-import pdf_tool_manager
+from src.corpus_creator.text_extraction import pdf_text_extractor
 import json
-from src.tools import dataframe_tools
+from src.corpus_creator.tools import dataframe_tools
 
 if __name__ == '__main__':
     '''
@@ -15,7 +14,7 @@ if __name__ == '__main__':
     rename_files_flag = config["rename_files_flag"]
 
     if rename_files_flag:
-        pdf_tool_manager.rename_files_in_path(pdfs_path)
+        pdf_text_extractor.rename_files_in_path(pdfs_path)
 
     # First extract the text from all the pdfs in the subdirs
     full_text_df = pdf_text_extractor.extract_text_from_pdfs_in_subdirs_to_df(pdfs_path)
