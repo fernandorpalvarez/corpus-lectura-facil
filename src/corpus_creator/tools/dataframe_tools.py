@@ -2,7 +2,7 @@ import json
 import os
 import pandas as pd
 
-_config = json.load(open("../../../config/input_output_config.json", "r", encoding="utf-8"))
+_config = json.load(open("../../config/input_output_config.json", "r", encoding="utf-8"))
 _read_sep = _config["read"]["separator"]
 _write_sep = _config["write"]["separator"]
 _read_ext = _config["read"]["default_extension"]

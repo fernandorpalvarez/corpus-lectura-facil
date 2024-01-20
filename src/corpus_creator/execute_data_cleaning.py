@@ -9,14 +9,18 @@ if __name__ == '__main__':
         raw -> clean
     '''
     config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
-    extracted_text_path = config["extracted_text_path"]
+    base_path = config["base_path"]
+    raw_path = config["raw_path"]
+    clean_path = config["clean_path"]
     raw_file_name = config["raw_file_name"]
-    clean_text_path = config["clean_text_path"]
     clean_file_name = config["clean_file_name"]
 
+    full_raw_path = base_path + raw_path
+    full_clean_path = base_path + clean_path
+
     # Get the text
-    raw_text_df = dataframe_tools.read_dataframe(extracted_text_path, raw_file_name)
+    raw_text_df = dataframe_tools.read_dataframe(full_raw_path, raw_file_name)
     # Preprocess it
-    clean_text_df = apply_cleaning_pipeline(raw_text_df)
+    clean_text_df = DataCleaningPipeline().apply_cleaning_pipeline(raw_text_df)
     # Save it
-    dataframe_tools.write_dataframe(clean_text_df, clean_text_path, clean_file_name)
+    dataframe_tools.write_dataframe(clean_text_df, full_clean_path, clean_file_name)

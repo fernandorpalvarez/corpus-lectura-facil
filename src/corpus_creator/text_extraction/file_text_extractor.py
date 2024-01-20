@@ -59,7 +59,7 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
     from the current path will be appended inside this dataframe
     :return: Pandas DataFrame with the extracted text
     """
-    config = json.load(open("../../../config/text_extraction_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
     pdf_extractor_engine = config["pdf_extractor_engine"]
     n_pages_to_skip = config["n_pages_to_skip"]
 
@@ -93,13 +93,10 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
     :return: Pandas DataFrame
     """
-    print("Extracting text from raw files...")
     full_text_df = pd.DataFrame(columns=["text"])
     for root, subdir, files in os.walk(subdirs_path):
         if files:
             full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
-
-    print("Complete!")
 
     return full_text_df
 
@@ -147,3 +144,16 @@ def tag_data(df: pd.DataFrame, tag: object) -> pd.DataFrame:
     """
     df["class"] = tag
     return df.copy(deep=True)
+
+
+def lenguaje_natural_text_extractor(path):
+    # Open the file in read mode ('r' stands for read)
+    with open(path, 'r', encoding='utf-8') as file:
+        # Read the contents of the file
+        file_contents = file.read()
+
+    # Split the long string based on a delimiter
+    rows = file_contents.split("\n")
+
+    # Return a DataFrame with a single column 'Text'
+    return pd.DataFrame({'Text': rows}).dropna(subset=['Text'])

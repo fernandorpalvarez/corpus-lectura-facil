@@ -1,4 +1,4 @@
-import web_scrapping_manager
+from src.corpus_creator.web_scrapping_impl import web_scrapping_manager
 
 
 if __name__ == '__main__':
