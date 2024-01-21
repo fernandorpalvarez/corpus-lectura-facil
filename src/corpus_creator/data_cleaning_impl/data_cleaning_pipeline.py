@@ -1,31 +1,29 @@
-import json
 import re
+
+import numpy as np
+import pandas as pd
+
 from src.corpus_creator.interfaces.DataCleaningInterface import DataCleaningInterface
 
 
 class DataCleaningPipeline(DataCleaningInterface):
-    def __init__(self):
-        self.config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
+    def __init__(self, min_len_for_line, max_len_for_line, min_dig_number):
+        self.min_len_for_line = min_len_for_line
+        self.max_len_for_line = max_len_for_line
+        self.min_dig_number = min_dig_number
 
-    def apply_cleaning_pipeline(self, df):
-        print("Executing raw to clean...")
-
-        # Get the config from json file
-        min_len_for_line = self.config["min_len_for_line"]
-        max_len_for_line = self.config["max_len_for_line"]
-        min_dig_number = self.config["min_dig_number"]
+    def apply_cleaning_pipeline(self, df: pd.DataFrame):
+        df.dropna(subset=["text"], inplace=True)
 
         # Apply pipeline over the data
         df = self.apply_multiple_dots_substitution(df)
         df = self.apply_special_char_removal(df)
         df = self.apply_tokenization(df)
-        df = self.apply_special_line_removal(df, min_dig_number=min_dig_number)
-        df = self.remove_rows_based_on_length(df, min_l=min_len_for_line, max_l=max_len_for_line)
+        df = self.apply_special_line_removal(df, min_dig_number=self.min_dig_number)
+        df = self.remove_rows_based_on_length(df, min_l=self.min_len_for_line, max_l=self.max_len_for_line)
         df = self.apply_add_space_between_words(df)
 
         df.drop_duplicates(inplace=True)
-
-        print("Complete!")
 
         return df
 
@@ -51,9 +49,12 @@ class DataCleaningPipeline(DataCleaningInterface):
         """
         Apply tokenization based on pattern
         """
-        pattern = r'\.\s+|\.\n+|\n'
+        pattern = r'.'
         text_series = df['text'].str.split(pattern)
-        df = df.assign(text=text_series).explode('text')
+        df.drop(columns=['text'], inplace=True)
+        df = df.assign(text=text_series).explode('text')[['text', 'class']]
+        df['text'].replace('', np.nan, inplace=True)
+        df.dropna(subset=['text'], inplace=True)
         df['text'] = df['text'].apply(lambda x: str(x).rstrip() + ".")
         df.reset_index(drop=True, inplace=True)
 

@@ -1,6 +1,7 @@
 from src.corpus_creator.text_extraction import file_text_extractor
-import json
 from src.corpus_creator.tools import dataframe_tools
+import json
+import time
 
 if __name__ == '__main__':
     '''
@@ -25,6 +26,8 @@ if __name__ == '__main__':
 
     print("Extracting text from raw files...")
 
+    start_time = time.time()
+
     # First extract the text from all the pdfs in the subdirs
     lectura_facil_raw_text_df = file_text_extractor.extract_text_from_pdfs_in_subdirs_to_df(full_lectura_facil_path)
 
@@ -39,4 +42,8 @@ if __name__ == '__main__':
     dataframe_tools.write_dataframe(lectura_facil_raw_text_df, output_path_for_extracted_text, lectura_facil_file_name)
     dataframe_tools.write_dataframe(lenguaje_natural_raw_text_df, output_path_for_extracted_text, lenguaje_natural_file_name)
 
-    print("Complete!")
+    finish_time = time.time()
+
+    total_time = finish_time - start_time
+
+    print(f"Complete!: {total_time}")

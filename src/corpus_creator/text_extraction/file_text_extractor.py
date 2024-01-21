@@ -156,4 +156,4 @@ def lenguaje_natural_text_extractor(path):
     rows = file_contents.split("\n")
 
     # Return a DataFrame with a single column 'Text'
-    return pd.DataFrame({'Text': rows}).dropna(subset=['Text'])
+    return pd.DataFrame({'text': rows}).dropna(subset=['text'])
