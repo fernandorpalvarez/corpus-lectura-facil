@@ -3,12 +3,13 @@ import time
 from src.corpus_creator.tools import dataframe_tools
 from src.corpus_creator.corpus_combiner.corpus_combiner_tool import combine_multiple_corpus
 
-if __name__ == '__main__':
-    '''
+
+def execute_corpus_combiner():
+    """
         Pipeline to transform the clean text in the pipeline:
             clean -> transform
-    '''
-    config = json.load(open("../../config/corpus_combiner_config.json", "r", encoding="utf-8"))
+    """
+    config = json.load(open("../config/corpus_combiner_config.json", "r", encoding="utf-8"))
     base_path = config["base_path"]
     clean_text_path = config["clean_path"]
     transform_text_path = config["transform_path"]
@@ -38,3 +39,7 @@ if __name__ == '__main__':
     total_time = finish_time - start_time
 
     print(f"Complete!: {total_time}")
+
+
+if __name__ == '__main__':
+    execute_corpus_combiner()

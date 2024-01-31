@@ -4,12 +4,12 @@ import json
 import time
 
 
-if __name__ == '__main__':
-    '''
+def execute_data_cleaning():
+    """
     Pipeline to clean the raw text in the pipeline:
         raw -> clean
-    '''
-    config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
+    """
+    config = json.load(open("../config/data_cleaning_config.json", "r", encoding="utf-8"))
     base_path = config["base_path"]
     raw_path = config["raw_path"]
     clean_path = config["clean_path"]
@@ -46,3 +46,7 @@ if __name__ == '__main__':
     total_time = finish_time - start_time
 
     print(f"Complete!: {total_time}")
+
+
+if __name__ == '__main__':
+    execute_data_cleaning()

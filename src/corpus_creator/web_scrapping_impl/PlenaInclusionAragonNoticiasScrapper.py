@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.corpus_creator.interfaces import WebScrapperInterface
+from src.corpus_creator.interfaces.WebScrapperInterface import WebScrapperInterface
 from urllib.request import urlopen
 from urllib.parse import urljoin
 import requests

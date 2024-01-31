@@ -2,7 +2,7 @@ import os
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
-from src.corpus_creator.interfaces import WebScrapperInterface
+from src.corpus_creator.interfaces.WebScrapperInterface import WebScrapperInterface
 
 
 class PlenaInclusionExtremaduraScrapper(WebScrapperInterface):
