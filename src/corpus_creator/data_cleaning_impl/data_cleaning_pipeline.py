@@ -76,6 +76,7 @@ class DataCleaningPipeline(DataCleaningInterface):
 
         df = df[~df['text'].str.contains('©')]
         df = df[~df['text'].str.contains('www')]
+        df = df[~df['text'].str.contains(';')]
 
         return df
 
