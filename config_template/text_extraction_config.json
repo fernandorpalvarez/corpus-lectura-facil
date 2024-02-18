@@ -1,8 +1,11 @@
 {
+  "base_path": "Absolute path to base path",
+  "lectura_facil_path": "files_lectura_facil/",
+  "lenguaje_natural_path": "files_lenguaje_natural/infolibros_es.txt",
+  "output_path_for_extracted_text": "Absolute path for output text extraction",
+  "lectura_facil_file_name": "lectura_facil_raw_text",
+  "lenguaje_natural_file_name": "lenguaje_natural_raw_text",
   "pdf_extractor_engine": "pdf_miner",
   "n_pages_to_skip": 1,
-  "rename_files_flag": false,
-  "pdfs_path": "Absolute path to pdfs path",
-  "output_path_for_extracted_text": "Absolute path to raw path",
-  "file_name": "raw_text"
+  "rename_files_flag": false
 }

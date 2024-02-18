@@ -1,6 +1,6 @@
 {
-  "clean_text_path": "Absolute path to clean path",
-  "transform_text_path": "Absolute path to transform path",
-  "clean_text_name": "clean_text",
-  "transform_text_name": "final_corpus"
+  "ex_web_scrapping_flag": false,
+  "ex_text_extraction_flag": false,
+  "ex_data_cleaning_flag": true,
+  "ex_corpus_combiner_flag": true
 }

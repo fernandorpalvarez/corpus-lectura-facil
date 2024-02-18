@@ -1,0 +1,8 @@
+{
+  "base_path": "absolute path to base path",
+  "clean_path": "clean/",
+  "transform_path": "transformed/",
+  "clean_lectura_facil_name": "lectura_facil_clean_text",
+  "clean_lenguaje_natural_name": "lenguaje_natural_clean_text",
+  "transform_text_name": "final_corpus"
+}

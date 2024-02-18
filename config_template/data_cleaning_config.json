@@ -1,9 +1,9 @@
 {
-  "extracted_text_path": "Absolute path to raw path",
-  "raw_file_name": "raw_text",
-  "clean_text_path": "Absolute path to clean path",
-  "clean_file_name": "clean_text",
-  "min_len_for_line": 30,
-  "max_len_for_line": 70,
-  "min_dig_number": 4
+  "base_path": "Absolute path to base path",
+  "raw_path": "raw/",
+  "clean_path": "clean/",
+  "lectura_facil_raw_file_name": "lectura_facil_raw_text",
+  "lenguaje_natural_raw_file_name": "lenguaje_natural_raw_text",
+  "lectura_facil_clean_file_name": "lectura_facil_clean_text",
+  "lenguaje_natural_clean_file_name": "lenguaje_natural_clean_text"
 }
