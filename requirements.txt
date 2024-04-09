@@ -6,3 +6,7 @@ Requests>=2.31.0
 stanza>=1.5.1
 tqdm>=4.66.1
 bs4>=0.0.1
+numpy>=1.25.2
+gensim>=4.3.2
+matplotlib>=3.8.4
+scikit-learn>=1.4.1.post1
