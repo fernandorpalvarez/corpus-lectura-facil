@@ -1,9 +1,8 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+import pickle
 
 
 warnings.filterwarnings('ignore')
@@ -21,7 +20,19 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
     # define the model
-    model = RandomForestClassifier(verbose=1)
+    model = RandomForestClassifier(verbose=1, n_estimators=100)
 
     # fit the model on the whole dataset
-    model.fit(X, y)
+    print("Training model...")
+    model.fit(X_train, y_train)
+
+    # Save the model
+    print("Saving model...")
+    model_path = base_path + "classification_model/random_forest.pkl"
+    pickle.dump(model, open(model_path, 'wb'))
+
+    # load the model from disk
+    print("Testing model...")
+    loaded_model = pickle.load(open(model_path, 'rb'))
+    result = loaded_model.score(X_test, y_test)
+    print(result)
