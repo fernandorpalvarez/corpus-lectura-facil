@@ -1,4 +1,8 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, auc, precision_recall_curve
+
+from src.corpus_performance_evaluator.classification_model import ClassificationModel
 
 
 class CustomMetrics:
@@ -37,14 +41,15 @@ class CustomMetrics:
         self.true_negative = matrix[1][1]
 
         if print_matrix:
-            self.print_confusion_matrix(matrix)
+            self.print_confusion_matrix(matrix, unique)
 
         return unique, matrix
 
-    def print_confusion_matrix(self, matrix):
-        print('(A)' + ' '.join(str(x) for x in self))
+    @staticmethod
+    def print_confusion_matrix(matrix, unique):
+        print('(A)' + ' '.join(str(x) for x in unique))
         print('(P)---')
-        for i, x in enumerate(self):
+        for i, x in enumerate(unique):
             print("%s| %s" % (x, ' '.join(str(x) for x in matrix[i])))
 
     def accuracy_metric(self):
@@ -100,3 +105,56 @@ class CustomMetrics:
 
         # calculate precision-recall AUC
         return auc(recall, precision)
+
+    def calculate_metrics_report(self, save=False, path=None):
+        metrics = {"Metric": ["Accuracy", "Precision", "Recall", "F1-score", "auc_roc", "auc_pr"],
+                   "Value": []}
+
+        # Confusion matrix
+        self.confusion_matrix(print_matrix=True)
+
+        # Accuracy
+        accuracy = self.accuracy_metric()
+        metrics["Value"].append(accuracy)
+        print("Accuracy: ", accuracy)
+
+        # Precision
+        precision = self.precision_metric()
+        metrics["Value"].append(precision)
+        print("Precision: ", precision)
+
+        # Recall
+        recall = self.recall_metric()
+        metrics["Value"].append(recall)
+        print("Recall: ", recall)
+
+        # F1-Score
+        f1_score = self.f1_metric()
+        metrics["Value"].append(f1_score)
+        print("F1-score: ", f1_score)
+
+        # Area under ROC curve
+        auc_roc = self.auc_metric()
+        metrics["Value"].append(auc_roc)
+        print("Area under ROC curve: ", auc_roc)
+
+        # Area under precision recall curve
+        auc_pr = self.auc_pr_metric()
+        metrics["Value"].append(auc_pr)
+        print("Area under precision & recall curve: ", auc_pr)
+
+        if save:
+            pd.DataFrame.from_dict(metrics).to_csv(path, index=False, sep=";")
+
+
+if __name__ == '__main__':
+    path = ("C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus "
+            "Lectura Fácil (2023) - Documentos/data/corpus_performance_evaluator/")
+    RF_obj = ClassificationModel(RandomForestClassifier, path)
+    RF_obj.save_split_data()
+    RF_obj.load_model()
+    RF_obj.load_split_data()
+    predicted = RF_obj.predict(RF_obj.X_test)
+
+    cm_obj = CustomMetrics(RF_obj.y_test["class"].array, predicted)
+    cm_obj.calculate_metrics_report(path=(path + "classification_model/metrics.csv"), save=False)
