@@ -1,4 +1,4 @@
-from src.corpus_creator import wrapper_executor
+from src.corpus_creator.wrapper_executor import create_corpus
 
 if __name__ == '__main__':
-    wrapper_executor.create_corpus()
+    create_corpus()
