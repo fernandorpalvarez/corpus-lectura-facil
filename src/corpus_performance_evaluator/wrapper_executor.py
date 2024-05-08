@@ -19,6 +19,7 @@ def execute_corpus_performance_evaluation():
     ex_train_classifier_flag = config["ex_train_classifier_flag"]
     ex_compute_model_metrics_flag = config["ex_compute_model_metrics_flag"]
     rf_obj = None
+    classification_model_class = RandomForestClassifier
     
     # Preprocess text
     if ex_preprocess_flag:
@@ -39,15 +40,15 @@ def execute_corpus_performance_evaluation():
 
     # Train model
     if ex_train_classifier_flag:
-        rf_obj = ClassificationModel(RandomForestClassifier, base_path + "corpus_performance_evaluator/")
-        rf_obj.save_split_data()
+        rf_obj = ClassificationModel(classification_model_class, base_path + "corpus_performance_evaluator/")
+        rf_obj.load_split_data()
         rf_obj.train_model()
         rf_obj.save_model()
 
     # Model metrics
     if ex_compute_model_metrics_flag:
         if not rf_obj:
-            rf_obj = ClassificationModel(RandomForestClassifier, base_path + "corpus_performance_evaluator/")
+            rf_obj = ClassificationModel(classification_model_class, base_path + "corpus_performance_evaluator/")
 
         rf_obj.load_model()
         rf_obj.load_split_data()
