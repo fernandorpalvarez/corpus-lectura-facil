@@ -11,7 +11,7 @@ def create_corpus():
     This function works as a wrapper to execute only the steps in the corpus creation pipeline that the user previously
     specified in the config
     """
-    config = json.load(open("../config/corpus_creation_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
     ex_web_scrapping_flag = config["ex_web_scrapping_flag"]
     ex_text_extraction_flag = config["ex_text_extraction_flag"]
     ex_data_cleaning_flag = config["ex_data_cleaning_flag"]

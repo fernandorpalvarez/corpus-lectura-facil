@@ -9,7 +9,7 @@ def execute_text_extraction():
        Pipeline to extract the raw text from the pdf files:
            pdf -> raw
     """
-    config = json.load(open("../config/text_extraction_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
     output_path_for_extracted_text = config["output_path_for_extracted_text"]
     base_path = config["base_path"]
     rename_files_flag = config["rename_files_flag"]

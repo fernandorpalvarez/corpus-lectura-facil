@@ -9,16 +9,17 @@ from sklearn.ensemble import RandomForestClassifier
 
 def execute_corpus_performance_evaluation():
     """
-    This function works as a wrapper to execute only the steps in the corpus creation pipeline that the user previously
-    specified in the config
+    This function works as a wrapper to execute only the steps in the corpus performance evaluation pipeline that the
+    user previously specified in the config
     """
-    config = json.load(open("../config/corpus_performance_evaluator_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/corpus_performance_evaluator_config.json", "r", encoding="utf-8"))
     base_path = config["base_path"]
     ex_preprocess_flag = config["ex_preprocess_flag"]
     ex_encoder_flag = config["ex_encoder_flag"]
     ex_train_classifier_flag = config["ex_train_classifier_flag"]
     ex_compute_model_metrics_flag = config["ex_compute_model_metrics_flag"]
-
+    rf_obj = None
+    
     # Preprocess text
     if ex_preprocess_flag:
         final_corpus_path = base_path + "extracted_text_pipeline/transformed/final_corpus.csv"
@@ -38,17 +39,19 @@ def execute_corpus_performance_evaluation():
 
     # Train model
     if ex_train_classifier_flag:
-        RF_obj = ClassificationModel(RandomForestClassifier, base_path + "corpus_performance_evaluator/")
-        RF_obj.save_split_data()
-        RF_obj.train_model()
-        RF_obj.save_model()
+        rf_obj = ClassificationModel(RandomForestClassifier, base_path + "corpus_performance_evaluator/")
+        rf_obj.save_split_data()
+        rf_obj.train_model()
+        rf_obj.save_model()
 
     # Model metrics
     if ex_compute_model_metrics_flag:
-        if RF_obj:
-            RF_obj.load_model()
-            RF_obj.load_split_data()
-            predicted = RF_obj.predict(RF_obj.X_test)
+        if not rf_obj:
+            rf_obj = ClassificationModel(RandomForestClassifier, base_path + "corpus_performance_evaluator/")
 
-            cm_obj = CustomMetrics(RF_obj.y_test["class"].array, predicted)
-            cm_obj.calculate_metrics_report(path=(base_path + "classification_model/metrics.csv"), save=False)
+        rf_obj.load_model()
+        rf_obj.load_split_data()
+        predicted = rf_obj.predict(rf_obj.X_test)
+
+        cm_obj = CustomMetrics(rf_obj.y_test["class"].array, predicted)
+        cm_obj.calculate_metrics_report(path=(base_path + "classification_model/metrics.csv"), save=False)

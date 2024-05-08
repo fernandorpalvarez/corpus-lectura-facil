@@ -9,7 +9,7 @@ def execute_corpus_combiner():
         Pipeline to transform the clean text in the pipeline:
             clean -> transform
     """
-    config = json.load(open("../config/corpus_combiner_config.json", "r", encoding="utf-8"))
+    config = json.load(open("../../config/corpus_combiner_config.json", "r", encoding="utf-8"))
     base_path = config["base_path"]
     clean_text_path = config["clean_path"]
     transform_text_path = config["transform_path"]
