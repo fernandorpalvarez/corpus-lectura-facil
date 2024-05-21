@@ -2,5 +2,5 @@
   "ex_web_scrapping_flag": false,
   "ex_text_extraction_flag": false,
   "ex_data_cleaning_flag": true,
-  "ex_corpus_combiner_flag": true
+  "ex_corpus_combiner_flag": false
 }

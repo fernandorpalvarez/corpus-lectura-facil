@@ -1,0 +1,12 @@
+{
+  "base_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/",
+  "input_corpus_name": "final_corpus.csv",
+  "ex_preprocess_flag": false,
+  "ex_encoder_flag": false,
+  "ex_train_classifier_flag": true,
+  "ex_compute_model_metrics_flag": true,
+  "classification_model": {
+    "algorithm": "nb",
+    "model_name": "naive_bayes.pkl"
+  }
+}

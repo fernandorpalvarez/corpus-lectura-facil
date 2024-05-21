@@ -34,7 +34,7 @@
         "url": "https://transparencia.aragon.es/GobiernoFacil"
       },
       "plena_inclusion_turismo_facil": {
-        "execute": false,
+        "execute": true,
         "url": "https://www.plenainclusion.org/l/mapa-del-turismo-facil-en-espana/"
       },
       "easy_news": {
@@ -42,6 +42,6 @@
         "url": "https://easynewsportal.eu/index.php?lang=es"
       }
     },
-    "saving_path": "Absolute path to raw path"
+    "saving_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/pdfs_from_web/"
   }
 }
