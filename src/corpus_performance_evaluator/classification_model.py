@@ -2,17 +2,23 @@ import os.path
 
 import pandas as pd
 import warnings
+import random
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 import pickle
 
+random.seed(10)
 warnings.filterwarnings('ignore')
 
 
 class ClassificationModel:
     def __init__(self, model_class, base_path):
         # Instance the model
-        self.model = model_class(verbose=1, n_estimators=100)
+        if model_class == RandomForestClassifier:
+            self.model = model_class(verbose=1, n_estimators=100)
+        else:
+            self.model = model_class()
 
         # Get the data
         self.base_path = base_path
@@ -27,6 +33,7 @@ class ClassificationModel:
 
     def split_df(self):
         # Split the data
+        self.df.dropna(inplace=True)
         x = self.df.loc[:, self.df.columns != 'class']
         y = self.df["class"]
         return train_test_split(x, y, test_size=0.33, random_state=42)
@@ -58,15 +65,15 @@ class ClassificationModel:
         print("Training model...")
         self.model.fit(self.X_train, self.y_train)
 
-    def save_model(self):
+    def save_model(self, model_name: str):
         # Save the model using the pickle library
         print("Saving model...")
-        model_path = self.base_path + "classification_model/random_forest.pkl"
+        model_path = self.base_path + f"classification_model/{model_name}"
         pickle.dump(self.model, open(model_path, 'wb'))
 
-    def load_model(self):
+    def load_model(self, model_name: str):
         # Load the model using the pickle library
-        model_path = self.base_path + "classification_model/random_forest.pkl"
+        model_path = self.base_path + f"classification_model/{model_name}"
         self.model = pickle.load(open(model_path, 'rb'))
 
     def predict(self, data):

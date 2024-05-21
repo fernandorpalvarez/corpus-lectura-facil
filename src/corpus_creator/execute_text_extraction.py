@@ -12,7 +12,6 @@ def execute_text_extraction():
     config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
     output_path_for_extracted_text = config["output_path_for_extracted_text"]
     base_path = config["base_path"]
-    rename_files_flag = config["rename_files_flag"]
     lectura_facil_path = config["lectura_facil_path"]
     lenguaje_natural_path = config["lenguaje_natural_path"]
     lectura_facil_file_name = config["lectura_facil_file_name"]
@@ -21,9 +20,6 @@ def execute_text_extraction():
     # Build the complete paths for both data sources
     full_lectura_facil_path = base_path + lectura_facil_path
     full_lenguaje_natural_path = base_path + lenguaje_natural_path
-
-    if rename_files_flag:
-        file_text_extractor.rename_files_in_path(lectura_facil_path)
 
     print("Extracting text from raw files...")
 

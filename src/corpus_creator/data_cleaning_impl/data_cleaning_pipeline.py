@@ -22,6 +22,7 @@ class DataCleaningPipeline(DataCleaningInterface):
         df = self.apply_special_line_removal(df, min_dig_number=self.min_dig_number)
         df = self.remove_rows_based_on_length(df, min_l=self.min_len_for_line, max_l=self.max_len_for_line)
         df = self.apply_add_space_between_words(df)
+        df["text"] = df["text"] + "."
 
         df.drop_duplicates(inplace=True)
 
@@ -55,7 +56,7 @@ class DataCleaningPipeline(DataCleaningInterface):
         df = df.assign(text=text_series).explode('text')[['text', 'class']]
         df['text'].replace('', np.nan, inplace=True)
         df.dropna(subset=['text'], inplace=True)
-        df['text'] = df['text'].apply(lambda x: str(x).rstrip() + ".")
+        df['text'] = df['text'].apply(lambda x: str(x).rstrip())
         df.reset_index(drop=True, inplace=True)
 
         return df
@@ -73,10 +74,7 @@ class DataCleaningPipeline(DataCleaningInterface):
 
         # Filter DataFrame in order to keep only the rows that match the mask
         df = df[~mask]
-
-        df = df[~df['text'].str.contains('©')]
-        df = df[~df['text'].str.contains('www')]
-        df = df[~df['text'].str.contains(';')]
+        df = df[~df['text'].str.contains('[^a-zA-Z \náéíóúÁÉÍÓÚ]')]
 
         return df
 

@@ -81,7 +81,12 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
                 pdf_text = f.read()
 
         # 2. Save the extracted text into a pd df as a new row
-        text_df.loc[len(text_df)] = [pdf_text]
+        try:
+            source = path.split("/")[-1] + "/" + pdf_name
+            text_df.loc[len(text_df)] = [pdf_text, source]
+        except UnboundLocalError as e:
+            print(e)
+            continue
 
     # Return the pd df
     return text_df
@@ -93,7 +98,7 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
     :return: Pandas DataFrame
     """
-    full_text_df = pd.DataFrame(columns=["text"])
+    full_text_df = pd.DataFrame(columns=["text", "source"])
     for root, subdir, files in os.walk(subdirs_path):
         if files:
             full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
