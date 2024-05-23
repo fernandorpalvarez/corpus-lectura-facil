@@ -16,15 +16,17 @@ def execute_corpus_performance_evaluation():
     This function works as a wrapper to execute only the steps in the corpus performance evaluation pipeline that the
     user previously specified in the config
     """
-    config = json.load(open("../../config/corpus_performance_evaluator_config.json", "r", encoding="utf-8"))
-    base_path = config["base_path"]
-    input_corpus_name = config["input_corpus_name"]
-    ex_preprocess_flag = config["ex_preprocess_flag"]
-    ex_encoder_flag = config["ex_encoder_flag"]
-    ex_train_classifier_flag = config["ex_train_classifier_flag"]
-    ex_compute_model_metrics_flag = config["ex_compute_model_metrics_flag"]
-    model_name = config["classification_model"]["model_name"]
-    algorithm = config["classification_model"]["algorithm"]
+    corpus_performance_evaluator_config = json.load(open("../../config/corpus_performance_evaluator_config.json", "r", encoding="utf-8"))
+    corpus_creation_config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
+    project_path = corpus_creation_config["base_path"]
+    base_path =  project_path + corpus_performance_evaluator_config["base_path"]
+    input_corpus_name = corpus_performance_evaluator_config["input_corpus_name"]
+    ex_preprocess_flag = corpus_performance_evaluator_config["ex_preprocess_flag"]
+    ex_encoder_flag = corpus_performance_evaluator_config["ex_encoder_flag"]
+    ex_train_classifier_flag = corpus_performance_evaluator_config["ex_train_classifier_flag"]
+    ex_compute_model_metrics_flag = corpus_performance_evaluator_config["ex_compute_model_metrics_flag"]
+    model_name = corpus_performance_evaluator_config["classification_model"]["model_name"]
+    algorithm = corpus_performance_evaluator_config["classification_model"]["algorithm"]
     model_obj = None
     if algorithm == "rf":
         classification_model_class = RandomForestClassifier
