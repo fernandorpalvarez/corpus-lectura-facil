@@ -9,16 +9,18 @@ def execute_corpus_combiner():
         Pipeline to transform the clean text in the pipeline:
             clean -> transform
     """
-    config = json.load(open("../../config/corpus_combiner_config.json", "r", encoding="utf-8"))
-    base_path = config["base_path"]
-    clean_text_path = config["clean_path"]
-    transform_text_path = config["transform_path"]
-    lectura_facil_clean_text_name = config["clean_lectura_facil_name"]
-    lenguaje_natural_clean_text_name = config["clean_lenguaje_natural_name"]
-    transform_text_name = config["transform_text_name"]
+    config_corpus_combiner = json.load(open("../../config/corpus_combiner_config.json", "r", encoding="utf-8"))
+    config_corpus_creation = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
+    project_path = config_corpus_creation["base_path"]
+    base_path = config_corpus_combiner["base_path"]
+    clean_text_path = config_corpus_combiner["clean_path"]
+    transform_text_path = config_corpus_combiner["transform_path"]
+    lectura_facil_clean_text_name = config_corpus_combiner["clean_lectura_facil_name"]
+    lenguaje_natural_clean_text_name = config_corpus_combiner["clean_lenguaje_natural_name"]
+    transform_text_name = config_corpus_combiner["transform_text_name"]
 
-    full_clean_path = base_path + clean_text_path
-    full_transform_path = base_path + transform_text_path
+    full_clean_path = project_path + base_path + clean_text_path
+    full_transform_path = project_path + base_path + transform_text_path
 
     print("Combining dataframes...")
 

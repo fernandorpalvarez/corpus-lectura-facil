@@ -28,6 +28,5 @@ def rename_files_in_subdirs_of_path(path: str):
 
 
 if __name__ == '__main__':
-    base_path = ("C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus "
-                 "Lectura Fácil (2023) - Documentos/data/files_lectura_facil/")
+    base_path = "your_path"
     rename_files_in_subdirs_of_path(base_path)

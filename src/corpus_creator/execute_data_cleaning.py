@@ -9,17 +9,19 @@ def execute_data_cleaning():
     Pipeline to clean the raw text in the pipeline:
         raw -> clean
     """
-    config = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
-    base_path = config["base_path"]
-    raw_path = config["raw_path"]
-    clean_path = config["clean_path"]
-    lectura_facil_raw_file_name = config["lectura_facil_raw_file_name"]
-    lenguaje_natural_raw_file_name = config["lenguaje_natural_raw_file_name"]
-    lectura_facil_clean_file_name = config["lectura_facil_clean_file_name"]
-    lenguaje_natural_clean_file_name = config["lenguaje_natural_clean_file_name"]
+    config_data_cleaning = json.load(open("../../config/data_cleaning_config.json", "r", encoding="utf-8"))
+    config_corpus_creation = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
+    project_path = config_corpus_creation["base_path"]
+    base_path = config_data_cleaning["base_path"]
+    raw_path = config_data_cleaning["raw_path"]
+    clean_path = config_data_cleaning["clean_path"]
+    lectura_facil_raw_file_name = config_data_cleaning["lectura_facil_raw_file_name"]
+    lenguaje_natural_raw_file_name = config_data_cleaning["lenguaje_natural_raw_file_name"]
+    lectura_facil_clean_file_name = config_data_cleaning["lectura_facil_clean_file_name"]
+    lenguaje_natural_clean_file_name = config_data_cleaning["lenguaje_natural_clean_file_name"]
 
-    full_raw_path = base_path + raw_path
-    full_clean_path = base_path + clean_path
+    full_raw_path = project_path + base_path + raw_path
+    full_clean_path = project_path + base_path + clean_path
 
     print("Executing data cleaning...")
 

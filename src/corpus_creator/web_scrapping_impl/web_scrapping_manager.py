@@ -13,17 +13,12 @@ from src.corpus_creator.web_scrapping_impl.PlenaInclusionAragonNoticiasScrapper 
     PlenaInclusionAragonNoticiasScrapper
 
 
-def extract_pdfs_from_webs():
-    # First get the config from the json file
-    config = json.load(open("../../config/web_scrapping_config.json.json", "r", encoding="utf-8"))
-    sources = config["web_scrapping"]["sources"]
-    base_saving_path = config["web_scrapping"]["saving_path"]
-
+def extract_pdfs_from_webs(sources, path):
     # Iterate over the sources and execute their respective script
     for source in sources:
         if sources[source]["execute"]:
             url = sources[source]["url"]
-            saving_path = os.path.join(base_saving_path, source)
+            saving_path = os.path.join(path, source)
 
             if source == "asociacion_lectura_facil":
                 AsociacionLecturaFacilScrapper().execute_scrapping(url, saving_path)

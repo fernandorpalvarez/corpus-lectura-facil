@@ -9,17 +9,19 @@ def execute_text_extraction():
        Pipeline to extract the raw text from the pdf files:
            pdf -> raw
     """
-    config = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
-    output_path_for_extracted_text = config["output_path_for_extracted_text"]
-    base_path = config["base_path"]
-    lectura_facil_path = config["lectura_facil_path"]
-    lenguaje_natural_path = config["lenguaje_natural_path"]
-    lectura_facil_file_name = config["lectura_facil_file_name"]
-    lenguaje_natural_file_name = config["lenguaje_natural_file_name"]
+    config_text_extraction = json.load(open("../../config/text_extraction_config.json", "r", encoding="utf-8"))
+    config_corpus_creation = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
+    project_path = config_corpus_creation["base_path"]
+    output_path_for_extracted_text = config_text_extraction["output_path_for_extracted_text"]
+    base_path = config_text_extraction["base_path"]
+    lectura_facil_path = config_text_extraction["lectura_facil_path"]
+    lenguaje_natural_path = config_text_extraction["lenguaje_natural_path"]
+    lectura_facil_file_name = config_text_extraction["lectura_facil_file_name"]
+    lenguaje_natural_file_name = config_text_extraction["lenguaje_natural_file_name"]
 
     # Build the complete paths for both data sources
-    full_lectura_facil_path = base_path + lectura_facil_path
-    full_lenguaje_natural_path = base_path + lenguaje_natural_path
+    full_lectura_facil_path = project_path + base_path + lectura_facil_path
+    full_lenguaje_natural_path = project_path + base_path + lenguaje_natural_path
 
     print("Extracting text from raw files...")
 
@@ -36,8 +38,8 @@ def execute_text_extraction():
     lenguaje_natural_raw_text_df = file_text_extractor.tag_data(lenguaje_natural_raw_text_df, 1)
 
     # Lastly save the extracted text into csv file
-    dataframe_tools.write_dataframe(lectura_facil_raw_text_df, output_path_for_extracted_text, lectura_facil_file_name)
-    dataframe_tools.write_dataframe(lenguaje_natural_raw_text_df, output_path_for_extracted_text, lenguaje_natural_file_name)
+    dataframe_tools.write_dataframe(lectura_facil_raw_text_df, project_path + output_path_for_extracted_text, lectura_facil_file_name)
+    dataframe_tools.write_dataframe(lenguaje_natural_raw_text_df, project_path + output_path_for_extracted_text, lenguaje_natural_file_name)
 
     finish_time = time.time()
 

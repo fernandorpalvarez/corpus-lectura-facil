@@ -1,5 +1,5 @@
 {
-  "base_path": "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/extracted_text_pipeline/",
+  "base_path": "extracted_text_pipeline/",
   "raw_path": "raw/",
   "clean_path": "clean/",
   "lectura_facil_raw_file_name": "lectura_facil_raw_text",
