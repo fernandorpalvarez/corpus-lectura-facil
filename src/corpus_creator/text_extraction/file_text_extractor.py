@@ -8,6 +8,13 @@ from tqdm import tqdm
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextContainer, LTTextBox
 import fitz
+import logging
+
+logging.basicConfig(filename="../../data/errors.log",
+                    filemode='w+',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.ERROR)
 
 
 def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pdf_miner", n_pages=1):
@@ -72,8 +79,7 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
                                                  pdf_extractor_engine=pdf_extractor_engine,
                                                  n_pages=n_pages_to_skip)
             except Exception as e:
-                print("Error extracting text from ", os.path.join(path, pdf_name))
-                print(e)
+                logging.error(f"Error extracting text from {os.path.join(path, pdf_name)}, {e}")
                 continue
 
         elif pdf_name.endswith(".txt"):
@@ -85,7 +91,7 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
             source = path.split("/")[-1] + "/" + pdf_name
             text_df.loc[len(text_df)] = [pdf_text, source]
         except UnboundLocalError as e:
-            print(e)
+            logging.error(f"Error extracting text from {os.path.join(path, pdf_name)}, {e}")
             continue
 
     # Return the pd df
@@ -101,6 +107,7 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     full_text_df = pd.DataFrame(columns=["text", "source"])
     for root, subdir, files in os.walk(subdirs_path):
         if files:
+            print(f"\nDirectory: {root.split('/')[-1]}...")
             full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
 
     return full_text_df
@@ -119,25 +126,6 @@ def save_dataframe_in_path(df, path, file_name="raw_text.csv", separator="|"):
         df.to_csv(os.path.join(path, file_name), sep=separator, index=False, encoding="utf-8")
     except Exception as e:
         print(e)
-
-
-def rename_files_in_path(folder_path):
-    data_type = "pdf"
-    i = 0
-    for file_path in tqdm(os.listdir(folder_path)):
-        old_name = os.path.join(folder_path, file_path)
-        if old_name.endswith(".txt"):
-            data_type = "txt"
-        elif old_name.endswith(".pdf"):
-            data_type = "pdf"
-
-        new_name = os.path.join(folder_path, f"{data_type}_{str(i)}.{data_type}")
-        while os.path.isfile(new_name):
-            i += 1
-            new_name = os.path.join(folder_path, f"{data_type}_{str(i)}.{data_type}")
-
-        os.rename(old_name, new_name)
-        i += 1
 
 
 def tag_data(df: pd.DataFrame, tag: object) -> pd.DataFrame:
@@ -161,4 +149,4 @@ def lenguaje_natural_text_extractor(path):
     rows = file_contents.split("\n")
 
     # Return a DataFrame with a single column 'Text'
-    return pd.DataFrame({'text': rows}).dropna(subset=['text'])
+    return pd.DataFrame({'text': rows, 'source': path.split("/")[-1]}).dropna(subset=['text'])

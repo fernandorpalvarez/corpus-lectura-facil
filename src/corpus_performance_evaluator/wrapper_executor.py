@@ -18,8 +18,7 @@ def execute_corpus_performance_evaluation():
     """
     corpus_performance_evaluator_config = json.load(open("../../config/corpus_performance_evaluator_config.json", "r", encoding="utf-8"))
     corpus_creation_config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
-    project_path = corpus_creation_config["base_path"]
-    base_path =  project_path + corpus_performance_evaluator_config["base_path"]
+    base_path = corpus_creation_config["base_path"]
     input_corpus_name = corpus_performance_evaluator_config["input_corpus_name"]
     ex_preprocess_flag = corpus_performance_evaluator_config["ex_preprocess_flag"]
     ex_encoder_flag = corpus_performance_evaluator_config["ex_encoder_flag"]
@@ -104,4 +103,4 @@ def execute_corpus_performance_evaluation():
 
             cm_obj = CustomMetrics(model_obj.y_test["class"].array, predicted)
             cm_obj.calculate_metrics_report(path=(base_path + "corpus_performance_evaluator/classification_model/"
-                                                              f"metrics_{algorithm}.csv"), save=True)
+                                                              f"metrics_{algorithm}.csv"), save=False)

@@ -29,6 +29,13 @@ class DataCleaningPipeline(DataCleaningInterface):
         return df
 
     @staticmethod
+    def apply_multiple_dots_substitution(df):
+        # Use a regular expression to replace strings of more than 3 dots in a row with just one dot
+        df['text'] = df['text'].apply(lambda x: re.sub(r'\.{4,}', r".", str(x)))
+
+        return df
+
+    @staticmethod
     def apply_special_char_removal(df):
         # Special characters removal
         # Pattern for replacing "…" character with three dots
@@ -53,7 +60,7 @@ class DataCleaningPipeline(DataCleaningInterface):
         pattern = r'.'
         text_series = df['text'].str.split(pattern)
         df.drop(columns=['text'], inplace=True)
-        df = df.assign(text=text_series).explode('text')[['text', 'class']]
+        df = df.assign(text=text_series).explode('text')[['text', 'source', 'class']]
         df['text'].replace('', np.nan, inplace=True)
         df.dropna(subset=['text'], inplace=True)
         df['text'] = df['text'].apply(lambda x: str(x).rstrip())
@@ -92,12 +99,5 @@ class DataCleaningPipeline(DataCleaningInterface):
     def apply_add_space_between_words(df):
         # Use a regular expression to add a space after all minor-case characters followed by an uppercase characters
         df['text'] = df['text'].apply(lambda x: re.sub(r'([a-z])([A-Z])', r"\1 \2", str(x)))
-
-        return df
-
-    @staticmethod
-    def apply_multiple_dots_substitution(df):
-        # Use a regular expression to replace strings of more than 3 dots in a row with just one dot
-        df['text'] = df['text'].apply(lambda x: re.sub(r'\.{4,}', r".", str(x)))
 
         return df
