@@ -13,7 +13,7 @@ def df_2_imgs(base_path):
     arial_font = ImageFont.truetype("./Fonts/Arial-Unicode-Regular.ttf", 25)
 
     # Let's iterate over the phrases
-    data_path = base_path + "extracted_text_pipeline/transformed/final_corpus.csv"
+    data_path = base_path + "hand_wrtitten_text.csv"
     # This is the initial position of the text in the image
     height = 65
     width = 55
@@ -25,13 +25,13 @@ def df_2_imgs(base_path):
     for index, phrase in tqdm(enumerate(text_df["text"])):
         if index < 500:
             draw.text((width, height), phrase, fill=(0, 0, 0), font=arial_font)
-            img.save(base_path + f"zooniverse_data/subject_data/text_{index}.png")
-            img = Image.new("RGBA", (1450, 150), (255, 255, 255))
+            img.save(base_path + f"subject_data/text_{index}.png")
+            img = Image.new("RGBA", (1750, 150), (255, 255, 255))
             draw = ImageDraw.Draw(img)
 
 
 if __name__ == '__main__':
     path = (
         "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura "
-        "Fácil (2023) - Documentos/data/")
+        "Fácil (2023) - Documentos/data/zooniverse_data/")
     df_2_imgs(path)

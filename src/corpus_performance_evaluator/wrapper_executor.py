@@ -26,7 +26,9 @@ def execute_corpus_performance_evaluation():
     ex_compute_model_metrics_flag = corpus_performance_evaluator_config["ex_compute_model_metrics_flag"]
     model_name = corpus_performance_evaluator_config["classification_model"]["model_name"]
     algorithm = corpus_performance_evaluator_config["classification_model"]["algorithm"]
+    save_testing = corpus_performance_evaluator_config["save_testing"]
     model_obj = None
+
     if algorithm == "rf":
         classification_model_class = RandomForestClassifier
     elif algorithm == "lr":
@@ -103,4 +105,4 @@ def execute_corpus_performance_evaluation():
 
             cm_obj = CustomMetrics(model_obj.y_test["class"].array, predicted)
             cm_obj.calculate_metrics_report(path=(base_path + "corpus_performance_evaluator/classification_model/"
-                                                              f"metrics_{algorithm}.csv"), save=False)
+                                                              f"metrics_{algorithm}.csv"), save=save_testing)
