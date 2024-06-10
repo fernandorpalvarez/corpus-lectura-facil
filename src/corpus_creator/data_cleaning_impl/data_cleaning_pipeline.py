@@ -7,7 +7,7 @@ from src.corpus_creator.interfaces.DataCleaningInterface import DataCleaningInte
 
 
 class DataCleaningPipeline(DataCleaningInterface):
-    def __init__(self, min_len_for_line, max_len_for_line, min_dig_number):
+    def __init__(self, min_dig_number=None, min_len_for_line=None, max_len_for_line=None):
         self.min_len_for_line = min_len_for_line
         self.max_len_for_line = max_len_for_line
         self.min_dig_number = min_dig_number
@@ -17,14 +17,23 @@ class DataCleaningPipeline(DataCleaningInterface):
 
         # Apply pipeline over the data
         df = self.apply_multiple_dots_substitution(df)
+        df = self.apply_html_tag_removal(df)
         df = self.apply_special_char_removal(df)
+        df = self.apply_multiple_white_space_replace(df)
         df = self.apply_tokenization(df)
-        df = self.apply_special_line_removal(df, min_dig_number=self.min_dig_number)
         df = self.remove_rows_based_on_length(df, min_l=self.min_len_for_line, max_l=self.max_len_for_line)
+        df = self.apply_special_char_removal(df)
+        df = self.apply_special_line_removal(df, min_dig_number=self.min_dig_number)
         df = self.apply_add_space_between_words(df)
         df["text"] = df["text"] + "."
 
         df.drop_duplicates(inplace=True)
+
+        return df
+
+    @staticmethod
+    def apply_multiple_white_space_replace(df):
+        df['text'] = df['text'].apply(lambda x: ' '.join(str(x).strip().split()))
 
         return df
 
@@ -36,10 +45,20 @@ class DataCleaningPipeline(DataCleaningInterface):
         return df
 
     @staticmethod
+    def apply_html_tag_removal(df):
+        clean_html_tag = re.compile('<.*?>')
+        df['text'] = df['text'].apply(lambda x: re.sub(clean_html_tag, '', str(x)))
+
+        clean_url_pattern = r'^https?:\/\/.*[\r\n]*'
+        df['text'] = df['text'].apply(lambda x: re.sub(clean_url_pattern, '', str(x), flags=re.MULTILINE))
+
+        return df
+
+    @staticmethod
     def apply_special_char_removal(df):
         # Special characters removal
         # Pattern for replacing "…" character with three dots
-        df['text'] = df['text'].apply(lambda x: str(x).replace("…", "..."))
+        df['text'] = df['text'].apply(lambda x: str(x).replace("...", "…"))
 
         # Pattern that matches strings starting with numbers, numbers followed by ª or only ª or »
         pattern_multiline = r'^\d+ª|^\d+\s*|^ª|»'
@@ -57,31 +76,35 @@ class DataCleaningPipeline(DataCleaningInterface):
         """
         Apply tokenization based on pattern
         """
-        pattern = r'.'
-        text_series = df['text'].str.split(pattern)
-        df.drop(columns=['text'], inplace=True)
-        df = df.assign(text=text_series).explode('text')[['text', 'source', 'class']]
-        df['text'].replace('', np.nan, inplace=True)
-        df.dropna(subset=['text'], inplace=True)
-        df['text'] = df['text'].apply(lambda x: str(x).rstrip())
-        df.reset_index(drop=True, inplace=True)
+        patterns = [r'.', r'(?<=[?!])\s', r'\s(?=[¿¡])']
+        for pattern in patterns:
+            text_series = df['text'].str.split(pattern)
+            df.drop(columns=['text'], inplace=True)
+            df = df.assign(text=text_series).explode('text')[['text', 'source', 'class']]
+            df['text'].replace('', np.nan, inplace=True)
+            df.dropna(subset=['text'], inplace=True)
+            df['text'] = df['text'].apply(lambda x: str(x).rstrip())
+            df.reset_index(drop=True, inplace=True)
 
         return df
 
     @staticmethod
-    def apply_special_line_removal(df, min_dig_number=3):
+    def apply_special_line_removal(df, min_dig_number=None):
         """
-        Function that removes the lines that contain more than n numerical digits
+        Function that removes the lines that contain more than n numerical digits and specific char combinations like
+        "http"
         :param df: DataFrame over which apply the line removal
         :param min_dig_number: Minimum number of numerical digits that a row must contain to be filtered
         :return: Filtered DataFrame
         """
         # Create a boolean mask based on digit len
-        mask = df['text'].str.count(r'\d') > min_dig_number
+        if min_dig_number:
+            mask = df['text'].str.count(r'\d') > min_dig_number
 
-        # Filter DataFrame in order to keep only the rows that match the mask
-        df = df[~mask]
-        df = df[~df['text'].str.contains('[^a-zA-Z \náéíóúÁÉÍÓÚ]')]
+            # Filter DataFrame in order to keep only the rows that match the mask
+            df = df[~mask]
+
+        df = df[~df.text.str.contains("http")]
 
         return df
 

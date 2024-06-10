@@ -20,6 +20,8 @@ def execute_corpus_performance_evaluation():
     corpus_creation_config = json.load(open("../../config/corpus_creation_config.json", "r", encoding="utf-8"))
     base_path = corpus_creation_config["base_path"]
     input_corpus_name = corpus_performance_evaluator_config["input_corpus_name"]
+    preprocessed_corpus_name = corpus_performance_evaluator_config["preprocessed_corpus_name"]
+    encoded_corpus_name = corpus_performance_evaluator_config["encoded_corpus_name"]
     ex_preprocess_flag = corpus_performance_evaluator_config["ex_preprocess_flag"]
     ex_encoder_flag = corpus_performance_evaluator_config["ex_encoder_flag"]
     ex_train_classifier_flag = corpus_performance_evaluator_config["ex_train_classifier_flag"]
@@ -40,24 +42,25 @@ def execute_corpus_performance_evaluation():
     
     # Preprocess text
     if ex_preprocess_flag:
+        print("Preprocessing corpus...")
         final_corpus_path = base_path + "extracted_text_pipeline/transformed/"
         final_corpus_df = read_dataframe(final_corpus_path, input_corpus_name)
         pipeline_obj = CorpusTrainingCleaningPipeline()
         clean_corpus_df = pipeline_obj.apply_cleaning_pipeline(final_corpus_df)
         write_dataframe(clean_corpus_df,
                         base_path + "corpus_performance_evaluator/preprocessing/",
-                        "preprocessed_text.csv")
+                        preprocessed_corpus_name)
 
     # Text encoder
     if ex_encoder_flag:
+        print("Encoding corpus...")
         preprocessed_text_path = base_path + "corpus_performance_evaluator/preprocessing/"
-        encoded_text_df = read_dataframe(preprocessed_text_path, "preprocessed_text.csv")
+        encoded_text_df = read_dataframe(preprocessed_text_path, preprocessed_corpus_name)
         encoded_text_df = apply_embedding(encoded_text_df,
-                                          model_path='C:/Users/ferna/PycharmProjects/corpus-lectura-facil/data/'
-                                                     'sbw_vectors.bin')
+                                          model_path='../../data/sbw_vectors.bin')
         write_dataframe(encoded_text_df,
                         base_path + "corpus_performance_evaluator/encoding/",
-                        "encoded_text.csv")
+                        encoded_corpus_name)
 
     models = {
         0: {
@@ -87,9 +90,11 @@ def execute_corpus_performance_evaluation():
         model_name = model[1]["model_name"]
         # Train model
         if ex_train_classifier_flag:
-            model_obj = ClassificationModel(classification_model_class, base_path + "corpus_performance_evaluator/")
-
-            # model_obj.save_split_data()
+            print(f"Training {algorithm} model...")
+            model_obj = ClassificationModel(classification_model_class, base_path + "corpus_performance_evaluator/",
+                                            encoded_corpus_name)
+            if model[0] == 0:
+                model_obj.save_split_data()
             model_obj.load_split_data()
             model_obj.train_model()
             model_obj.save_model(model_name=model_name)

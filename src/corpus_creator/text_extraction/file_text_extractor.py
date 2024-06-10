@@ -1,4 +1,5 @@
 import json
+import concurrent.futures
 import os
 
 import pandas as pd
@@ -58,9 +59,10 @@ def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pdf_miner", n_pages=1)
     return text
 
 
-def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.DataFrame) -> pandas.core.frame.DataFrame:
+def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.DataFrame, parallelize=False) -> pandas.core.frame.DataFrame:
     """
     Extract the text of the pdfs or txt files inside the path and returns them inside a pandas df
+    :param parallelize: Flag that indicates if you want to parallelize or not the execution
     :param path: path which contains the files with the text
     :param text_df: Optional parameter that contains the text already extracted from another path. The extracted text
     from the current path will be appended inside this dataframe
@@ -70,37 +72,71 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
     pdf_extractor_engine = config["pdf_extractor_engine"]
     n_pages_to_skip = config["n_pages_to_skip"]
 
-    # Iterate over the pdfs in path
-    for pdf_name in tqdm(os.listdir(path)):
-        # 1. Extract the text of each pdf or txt file
-        if pdf_name.endswith(".pdf"):
-            try:
-                pdf_text = extract_text_from_pdf(os.path.join(path, pdf_name),
-                                                 pdf_extractor_engine=pdf_extractor_engine,
-                                                 n_pages=n_pages_to_skip)
-            except Exception as e:
-                logging.error(f"Error extracting text from {os.path.join(path, pdf_name)}, {e}")
-                continue
+    if parallelize:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            text_df = [executor.submit(extract_text_from_pdf,
+                                       os.path.join(path, str(pdf_name)),
+                                       text_df,
+                                       pdf_extractor_engine,
+                                       n_pages_to_skip) for pdf_name in tqdm(os.listdir(path))]
 
-        elif pdf_name.endswith(".txt"):
-            with open(os.path.join(path, pdf_name), 'r', encoding='utf-8') as f:
-                pdf_text = f.read()
+        return pd.concat(df.result() for df in text_df)
 
-        # 2. Save the extracted text into a pd df as a new row
+    else:
+        for pdf_name in tqdm(os.listdir(path)):
+            text_df = extract_text_from_pdf(os.path.join(path, str(pdf_name)),
+                                                        text_df,
+                                                        pdf_extractor_engine,
+                                                        n_pages_to_skip)
+
+        return text_df
+
+
+def extract_text_from_pdf(pdf_path, text_df, pdf_extractor_engine, n_pages_to_skip):
+    source = pdf_path.split("/")[-1]
+    new_text_extracted = pd.DataFrame()
+    # 1. Extract the text of each pdf or txt file
+    if pdf_path.endswith(".pdf"):
         try:
-            source = path.split("/")[-1] + "/" + pdf_name
-            text_df.loc[len(text_df)] = [pdf_text, source]
-        except UnboundLocalError as e:
-            logging.error(f"Error extracting text from {os.path.join(path, pdf_name)}, {e}")
-            continue
+            pdf_text = extract_text_from_pdf(os.path.join(pdf_path),
+                                             pdf_extractor_engine=pdf_extractor_engine,
+                                             n_pages=n_pages_to_skip)
+            new_text_extracted["text"] = pdf_text,
+            new_text_extracted["source"] = source
+        except Exception as e:
+            logging.error(f"Error extracting text from {pdf_path}, {e}")
 
-    # Return the pd df
+    elif pdf_path.endswith(".txt"):
+        try:
+            with open(pdf_path, 'r', encoding='utf-8') as f:
+                pdf_text = f.read()
+            new_text_extracted["text"] = pdf_text,
+            new_text_extracted["source"] = source
+        except Exception as e:
+            logging.error(f"Error extracting text from {pdf_path}, {e}")
+
+    # TODO: This piece of code is adhoc for this project.
+    # All files we are reading are .pdfs but this file that is a .tsv, it also has a specific column called
+    # "text_e2r" which contains the easy to read text
+    elif pdf_path.endswith(".tsv"):
+        new_text_extracted = pd.read_csv(pdf_path, sep="\t")
+        new_text_extracted = new_text_extracted[["text_e2r"]]
+        new_text_extracted.rename(columns={"text_e2r": "text"}, inplace=True)
+        new_text_extracted["source"] = source
+
+    # 2. Save the extracted text into a pd df as a new row
+    try:
+        text_df = pd.concat([text_df, new_text_extracted])
+    except UnboundLocalError as e:
+        logging.error(f"Error extracting text from {pdf_path}, {e}")
+
     return text_df
 
 
-def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.DataFrame:
+def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path, parallelize_flag) -> pandas.core.frame.DataFrame:
     """
     Functions that iterates over the subdirs in the path, extract the text inside the pdfs and saves it in a pandas df
+    :param parallelize_flag: Flag that indicates if you want to execute the code with parallelization WOI
     :param subdirs_path: Path that contains the subdirs inside each of them containing the pdfs
     :return: Pandas DataFrame
     """
@@ -108,7 +144,7 @@ def extract_text_from_pdfs_in_subdirs_to_df(subdirs_path) -> pandas.core.frame.D
     for root, subdir, files in os.walk(subdirs_path):
         if files:
             print(f"\nDirectory: {root.split('/')[-1]}...")
-            full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df)
+            full_text_df = keep_extracted_text_from_path_in_df(root, full_text_df, parallelize_flag)
 
     return full_text_df
 
@@ -140,6 +176,7 @@ def tag_data(df: pd.DataFrame, tag: object) -> pd.DataFrame:
 
 
 def lenguaje_natural_text_extractor(path):
+    print(f"Directory: {path}...")
     # Open the file in read mode ('r' stands for read)
     with open(path, 'r', encoding='utf-8') as file:
         # Read the contents of the file

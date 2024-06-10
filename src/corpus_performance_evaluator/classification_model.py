@@ -13,22 +13,23 @@ warnings.filterwarnings('ignore')
 
 
 class ClassificationModel:
-    def __init__(self, model_class, base_path):
+    def __init__(self, model_class, base_path, corpus_data_name):
         # Instance the model
         if model_class == RandomForestClassifier:
             self.model = model_class(verbose=1, n_estimators=100)
         else:
             self.model = model_class()
+        self.algorithm = model_class
 
         # Get the data
         self.base_path = base_path
-        self.df = self.load_data()
+        self.df = self.load_data(corpus_data_name)
 
         # Split the data
         self.X_train, self.X_test, self.y_train, self.y_test = self.split_df()
 
-    def load_data(self):
-        final_corpus_path = self.base_path + "encoding/encoded_text.csv"
+    def load_data(self, corpus_name):
+        final_corpus_path = self.base_path + f"encoding/{corpus_name}"
         return pd.read_csv(final_corpus_path, sep="|", encoding="utf-8")
 
     def split_df(self):
@@ -62,7 +63,7 @@ class ClassificationModel:
 
     def train_model(self):
         # fit the model on the whole dataset
-        print("Training model...")
+        print(f"Training {self.algorithm} model...")
         self.model.fit(self.X_train, self.y_train)
 
     def save_model(self, model_name: str):
