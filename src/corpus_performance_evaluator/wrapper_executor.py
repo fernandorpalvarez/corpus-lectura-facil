@@ -55,8 +55,8 @@ def execute_corpus_performance_evaluation():
     if ex_encoder_flag:
         print("Encoding corpus...")
         preprocessed_text_path = base_path + "corpus_performance_evaluator/preprocessing/"
-        encoded_text_df = read_dataframe(preprocessed_text_path, preprocessed_corpus_name)
-        encoded_text_df = apply_embedding(encoded_text_df,
+        preprocessed_text_df = read_dataframe(preprocessed_text_path, preprocessed_corpus_name)
+        encoded_text_df = apply_embedding(preprocessed_text_df,
                                           model_path='../../data/sbw_vectors.bin')
         write_dataframe(encoded_text_df,
                         base_path + "corpus_performance_evaluator/encoding/",

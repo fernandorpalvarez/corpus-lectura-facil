@@ -5,7 +5,6 @@ import warnings
 import random
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 import pickle
 
 random.seed(10)

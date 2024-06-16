@@ -35,7 +35,7 @@ def extract_text_from_pdf(pdf_path, pdf_extractor_engine="pdf_miner", n_pages=1)
         # iterate over the pages in pdf file
         for page_num, page_layout in enumerate(extract_pages(pdf_path)):
             # Skip the first n pages
-            if page_num > n_pages:
+            if page_num >= n_pages:
                 for element in page_layout:
                     if isinstance(element, LTTextContainer):
                         text += element.get_text()
@@ -74,7 +74,7 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
 
     if parallelize:
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-            text_df = [executor.submit(extract_text_from_pdf,
+            text_df = [executor.submit(extract_and_concat_pdf_text_into_existing,
                                        os.path.join(path, str(pdf_name)),
                                        text_df,
                                        pdf_extractor_engine,
@@ -84,15 +84,15 @@ def keep_extracted_text_from_path_in_df(path: str, text_df: pandas.core.frame.Da
 
     else:
         for pdf_name in tqdm(os.listdir(path)):
-            text_df = extract_text_from_pdf(os.path.join(path, str(pdf_name)),
-                                                        text_df,
-                                                        pdf_extractor_engine,
-                                                        n_pages_to_skip)
+            text_df = extract_and_concat_pdf_text_into_existing(os.path.join(path, str(pdf_name)),
+                                                                text_df,
+                                                                pdf_extractor_engine,
+                                                                n_pages_to_skip)
 
         return text_df
 
 
-def extract_text_from_pdf(pdf_path, text_df, pdf_extractor_engine, n_pages_to_skip):
+def extract_and_concat_pdf_text_into_existing(pdf_path, text_df=None, pdf_extractor_engine="pdf_miner", n_pages_to_skip=1):
     source = pdf_path.split("/")[-1]
     new_text_extracted = pd.DataFrame()
     # 1. Extract the text of each pdf or txt file
@@ -125,6 +125,9 @@ def extract_text_from_pdf(pdf_path, text_df, pdf_extractor_engine, n_pages_to_sk
         new_text_extracted["source"] = source
 
     # 2. Save the extracted text into a pd df as a new row
+    if not text_df:
+        text_df = pd.DataFrame()
+
     try:
         text_df = pd.concat([text_df, new_text_extracted])
     except UnboundLocalError as e:
