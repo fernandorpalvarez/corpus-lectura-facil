@@ -1,3 +1,4 @@
+import os
 import pickle
 import pandas as pd
 import warnings
@@ -10,11 +11,12 @@ from src.corpus_performance_evaluator.text_encoder import apply_embedding
 warnings.filterwarnings('ignore')
 
 
-def calculate_file_classification(model_path, file_path):
+def calculate_file_classification(model_path, file_path, verbose=0):
     """
     Function that loads a binary classification model contained in model_path, extract the text contained in the file
     that is in the file path and calculates a % that represents the proportion of the file that is written in easy read
     methodology, according to the model.
+    :param verbose: Flag that indicates if you want to print the status of the process
     :param model_path: Path that contains a pretrained model, trained with the module corpus_performance_evaluator.classification_model.py
     :param file_path: Path that contains the file to be classified
     :return: Float value that represents the proportion of the file that is written in easy lecture methodology
@@ -49,21 +51,39 @@ def calculate_file_classification(model_path, file_path):
     if max(n_0, n_1) > 0.6 * n_total:
         if n_0 > n_1:
             percentage = classifications[classifications["class"] == 0]["percentage"].mean()
-            print(f"Predicted class: 'Lectura Fácil'")
-            print(f"Percentage of accuracy: {percentage}")
+            if verbose == 1:
+                print(f"Predicted class: 'Lectura Fácil'")
+                print(f"Percentage of accuracy: {percentage}")
+            return 0
         else:
             percentage = classifications[classifications["class"] == 1]["percentage"].mean()
-            print(f"Predicted class: 'Lenguaje natural'")
-            print(f"Percentage of accuracy: {percentage}")
+            if verbose == 1:
+                print(f"Predicted class: 'Lenguaje natural'")
+                print(f"Percentage of accuracy: {percentage}")
+            return 1
     else:
-        print("Model cannot give reliable classification, percentage of classification < 60% for both classes")
-        percentage_0 = classifications[classifications["class"] == 0]["percentage"].mean()
-        percentage_1 = classifications[classifications["class"] == 1]["percentage"].mean()
-        print(f"Percentage of accuracy for 'Lectura Fácil' class: {percentage_0}")
-        print(f"Percentage of accuracy for 'Lenguaje natural' class: {percentage_1}")
+        if verbose == 1:
+            print("Model cannot give reliable classification, percentage of classification < 60% for both classes")
+            percentage_0 = classifications[classifications["class"] == 0]["percentage"].mean()
+            percentage_1 = classifications[classifications["class"] == 1]["percentage"].mean()
+            print(f"Percentage of accuracy for 'Lectura Fácil' class: {percentage_0}")
+            print(f"Percentage of accuracy for 'Lenguaje natural' class: {percentage_1}")
+        return None
 
 
 if __name__ == '__main__':
+    base_path = "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/files_lectura_facil/"
     m_path = "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/corpus_performance_evaluator/classification_model/V3/random_forest.pkl"
-    text_path = "C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023) - Documentos/data/files_lectura_facil/plena_inclusion/9.0.pdf"
-    calculate_file_classification(m_path, text_path)
+    classes = {"file": [],
+               "class": []}
+    for root, subdir, files in os.walk(base_path):
+        if files:
+            for file in files:
+                text_path = os.path.join(root, file)
+                try:
+                    c = calculate_file_classification(m_path, text_path, verbose=0)
+                    classes["file"].append(file)
+                    classes["class"].append(c)
+                except:
+                    pass
+    pd.DataFrame.from_dict(classes).to_csv("../../data/classifications.csv", index=False)

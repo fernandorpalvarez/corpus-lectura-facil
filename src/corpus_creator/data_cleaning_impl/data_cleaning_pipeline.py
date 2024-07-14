@@ -39,6 +39,8 @@ class DataCleaningPipeline(DataCleaningInterface):
 
     @staticmethod
     def apply_multiple_dots_substitution(df):
+        # Pattern for replacing "…" character with three dots
+        df['text'] = df['text'].apply(lambda x: str(x).replace("…", "..."))
         # Use a regular expression to replace strings of more than 3 dots in a row with just one dot
         df['text'] = df['text'].apply(lambda x: re.sub(r'\.{4,}', r".", str(x)))
 
@@ -57,9 +59,6 @@ class DataCleaningPipeline(DataCleaningInterface):
     @staticmethod
     def apply_special_char_removal(df):
         # Special characters removal
-        # Pattern for replacing "…" character with three dots
-        df['text'] = df['text'].apply(lambda x: str(x).replace("...", "…"))
-
         # Pattern that matches strings starting with numbers, numbers followed by ª or only ª or »
         pattern_multiline = r'^\d+ª|^\d+\s*|^ª|»'
         df['text'] = df['text'].apply(lambda x: re.sub(pattern_multiline, " ", str(x), 0, re.MULTILINE))

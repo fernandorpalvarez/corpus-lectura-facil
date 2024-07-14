@@ -19,8 +19,7 @@ class CorpusTrainingCleaningPipeline(DataCleaningInterface):
 
         # Apply pipeline over the data
         df = self.apply_lowercase(df)
-        df = self.apply_remove_non_word_characters(df)
-        df = self.apply_remove_numeric_characters(df)
+        df = self.apply_remove_non_alphanumeric_characters(df)
         df = self.apply_tokenization(df)
         df = self.apply_stop_word_removal(df)
         df = self.apply_stem_words(df)
@@ -37,22 +36,13 @@ class CorpusTrainingCleaningPipeline(DataCleaningInterface):
         return df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
 
     @staticmethod
-    def apply_remove_non_word_characters(df: pd.DataFrame):
+    def apply_remove_non_alphanumeric_characters(df: pd.DataFrame):
         """
-        Remove non word characters from df
+        Remove non-alphanumeric characters from df
         :param df: Pandas DataFrame
         :return: Pandas DataFrame with non word characters
         """
-        return df.replace(to_replace=r'[^\w\s]', value='', regex=True)
-
-    @staticmethod
-    def apply_remove_numeric_characters(df: pd.DataFrame):
-        """
-        Remove numeric characters
-        :param df: Pandas DataFrame
-        :return: Pandas DataFrame with no numbers
-        """
-        return df.replace(to_replace=r'\d', value='', regex=True)
+        return df.replace(to_replace=r'[^\w\s\d]', value='', regex=True)
 
     @staticmethod
     def apply_tokenization(df: pd.DataFrame):
