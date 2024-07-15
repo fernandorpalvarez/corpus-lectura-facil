@@ -1,9 +1,10 @@
 import gensim
 import pandas as pd
 import numpy as np
+from pandas import Series
 
 
-def encode_text(text: str, embedding_model) -> list:
+def encode_text(text: str, embedding_model) -> Series:
     """
     Function that encoded a string using a pretrained embedding passed as input
     :param text: Text to be encoded
