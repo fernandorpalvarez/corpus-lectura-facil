@@ -1,7 +1,7 @@
 {
-  "base_path": "C:/Users/fernando.rubio.perez/OneDrive - Universidad Politécnica de Madrid/Documentos - Linea Accesibilidad Cognitiva (Proyecto)-Corpus Lectura Fácil (2023)/data",
+  "base_path": "your_path",
   "ex_web_scrapping_flag": false,
   "ex_text_extraction_flag": false,
-  "ex_data_cleaning_flag": true,
-  "ex_corpus_combiner_flag": false
+  "ex_data_cleaning_flag": false,
+  "ex_corpus_combiner_flag": true
 }

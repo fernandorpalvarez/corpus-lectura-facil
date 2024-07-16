@@ -1,11 +1,14 @@
 {
   "input_corpus_name": "final_corpus.csv",
+  "preprocessed_corpus_name": "preprocessed_text.csv",
+  "encoded_corpus_name": "encoded_text.csv",
   "ex_preprocess_flag": false,
   "ex_encoder_flag": false,
-  "ex_train_classifier_flag": true,
+  "ex_train_classifier_flag": false,
   "ex_compute_model_metrics_flag": true,
   "classification_model": {
     "algorithm": "nb",
     "model_name": "naive_bayes.pkl"
-  }
+  },
+  "save_testing": true
 }
