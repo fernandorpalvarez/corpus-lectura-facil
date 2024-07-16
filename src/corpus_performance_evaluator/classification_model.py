@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 
 
 class ClassificationModel:
-    def __init__(self, model_class, base_path, corpus_data_name):
+    def __init__(self, model_class, base_path, corpus_data_name=None):
         # Instance the model
         if model_class == RandomForestClassifier:
             self.model = model_class(verbose=1, n_estimators=100)
@@ -22,10 +22,11 @@ class ClassificationModel:
 
         # Get the data
         self.base_path = base_path
-        self.df = self.load_data(corpus_data_name)
+        if corpus_data_name:
+            self.df = self.load_data(corpus_data_name)
 
-        # Split the data
-        self.X_train, self.X_test, self.y_train, self.y_test = self.split_df()
+            # Split the data
+            self.X_train, self.X_test, self.y_train, self.y_test = self.split_df()
 
     def load_data(self, corpus_name):
         final_corpus_path = self.base_path + f"encoding/{corpus_name}"
@@ -52,13 +53,27 @@ class ClassificationModel:
         self.y_test.to_csv(data_path + "y_test.csv", index=False, sep="|", encoding="utf-8")
 
     def load_split_data(self):
-        data_path = self.base_path + "classification_model/train_test_data/"
+        data_path = self.base_path + "train_test_data/"
 
         # Load the splits
         self.X_train = pd.read_csv(data_path + "x_train.csv", sep="|")
         self.y_train = pd.read_csv(data_path + "y_train.csv", sep="|")
         self.X_test = pd.read_csv(data_path + "x_test.csv", sep="|")
         self.y_test = pd.read_csv(data_path + "y_test.csv", sep="|")
+
+        '''
+        self.X_train = pd.concat([self.X_train, self.X_test])
+        self.y_train = pd.concat([self.y_train, self.y_test])
+
+        self.X_test = pd.read_csv("C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva ("
+                                  "Proyecto)-Corpus Lectura Fácil (2023) - "
+                                  "Documentos/data/corpus_performance_evaluator/classification_model/test/x_test.csv"
+                                  "", sep="|")
+        self.y_test = pd.read_csv("C:/Users/ferna/Universidad Politécnica de Madrid/Linea Accesibilidad Cognitiva ("
+                                  "Proyecto)-Corpus Lectura Fácil (2023) - "
+                                  "Documentos/data/corpus_performance_evaluator/classification_model/test/y_test.csv"
+                                  "", sep="|")
+        '''
 
     def train_model(self):
         # fit the model on the whole dataset
@@ -73,7 +88,7 @@ class ClassificationModel:
 
     def load_model(self, model_name: str):
         # Load the model using the pickle library
-        model_path = self.base_path + f"classification_model/{model_name}"
+        model_path = self.base_path + f"{model_name}"
         self.model = pickle.load(open(model_path, 'rb'))
 
     def predict(self, data):

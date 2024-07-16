@@ -32,8 +32,8 @@ def execute_data_cleaning():
     ln_raw_text_df = dataframe_tools.read_dataframe(full_raw_path, lenguaje_natural_raw_file_name)
 
     # Initialize the two pipeline objects
-    lf_data_cleaning_obj = DataCleaningPipeline(min_dig_number=4, min_len_for_line=30)
-    ln_data_cleaning_obj = DataCleaningPipeline(min_dig_number=4, min_len_for_line=30)
+    lf_data_cleaning_obj = DataCleaningPipeline(min_dig_number=4, min_len_for_line=30, max_len_for_line=100)
+    ln_data_cleaning_obj = DataCleaningPipeline(min_dig_number=4, min_len_for_line=30, max_len_for_line=150)
 
     # Preprocess both dataframes
     lf_clean_text_df = lf_data_cleaning_obj.apply_cleaning_pipeline(lf_raw_text_df)
